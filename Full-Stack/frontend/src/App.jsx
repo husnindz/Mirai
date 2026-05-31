@@ -1,86 +1,30 @@
-import { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import JoinUs from './components/JoinUs';
-import AboutUs from './components/AboutUs';
-import StatsAndTestimonials from './components/StatsAndTestimonials';
-import Footer from './components/Footer';
+import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import LandingPage from './pages/landing-page/LandingPage';
+import ScrollToTop from './utils/ScrollToTop';
+import DashboardLayout from './layouts/DashboardLayout';
+import Dashboard from './pages/dashboard/Dashboard';
+import CheckUp from './pages/dashboard/CheckUp';
+import History from './pages/dashboard/History';
+import HistoryDetails from './pages/dashboard/HistoryDetails';
+import About from './pages/dashboard/About';
 
-function App() {
-  const [currentHash, setCurrentHash] = useState(window.location.hash);
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      setCurrentHash(hash);
-
-      const isFullPage = [
-        '#login',
-        '#register',
-        '#dashboard',
-        '#check-up',
-        '#history',
-        '#about',
-      ].includes(hash);
-      if (isFullPage) {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  useEffect(() => {
-    const hash = currentHash;
-    if (hash && ['#about-us', '#testimoni', '#contact'].includes(hash)) {
-      const id = hash.substring(1);
-      const timer = setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 80);
-      return () => clearTimeout(timer);
-    } else if (hash === '' || hash === '#') {
-      const timer = setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 80);
-      return () => clearTimeout(timer);
-    }
-  }, [currentHash]);
-
-  const isLoginPage = currentHash === '#login';
-  const isRegisterPage = currentHash === '#register';
-  const isDashboardPage = ['#dashboard', '#check-up', '#history', '#about'].includes(currentHash);
-
-  if (isLoginPage || isRegisterPage) {
-    return <Login initialTab={isRegisterPage ? 'register' : 'login'} />;
-  }
-
-  if (isDashboardPage) {
-    return <Dashboard />;
-  }
-
+export default function App() {
   return (
     <>
-      <Navbar />
-
-      <main>
-        <Hero />
-
-        <JoinUs />
-
-        <AboutUs />
-
-        <StatsAndTestimonials />
-      </main>
-
-      <Footer />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login initialTab="login" />} />
+        <Route path="/register" element={<Login initialTab="register" />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="checkup" element={<CheckUp />} />
+          <Route path="history" element={<History />} />
+          <Route path="history/:id" element={<HistoryDetails />} />
+          <Route path="about" element={<About />} />
+        </Route>
+      </Routes>
     </>
   );
 }
-
-export default App;

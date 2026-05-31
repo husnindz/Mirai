@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
 export default function Footer() {
@@ -13,7 +14,7 @@ export default function Footer() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 z-10 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 pb-16 border-b border-white/10">
           <div className="flex flex-col gap-6">
-            <a href="#" className="flex items-center gap-3 group">
+            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group">
               <svg
                 className="w-8 h-8 text-brand-accent transition-transform duration-300 group-hover:rotate-12"
                 fill="none"
@@ -28,7 +29,7 @@ export default function Footer() {
                 />
               </svg>
               <span className="font-montserrat font-bold text-xl tracking-wide">Mirai</span>
-            </a>
+            </Link>
             <p className="font-sans text-sm text-white/80 leading-relaxed">{t.footerDesc}</p>
 
             <div className="flex gap-4 mt-2">
@@ -68,9 +69,9 @@ export default function Footer() {
               {t.footerQuickLinks}
             </h4>
             <nav className="flex flex-col gap-3 font-sans text-sm text-white/80">
-              <a href="#" className="hover:text-brand-accent transition-colors">
+              <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-brand-accent transition-colors">
                 {t.home}
-              </a>
+              </Link>
               <a href="#about-us" className="hover:text-brand-accent transition-colors">
                 {t.aboutUs}
               </a>

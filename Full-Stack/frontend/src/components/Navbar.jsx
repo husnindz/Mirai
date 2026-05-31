@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import logoIcon from '../assets/logo-icon.png';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
@@ -30,16 +31,16 @@ export default function Navbar() {
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center justify-between">
         
-        <a href="#" className="flex items-center gap-3 group">
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group">
           <img src={logoIcon} alt="Mirai Logo" className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
           <span className="font-montserrat font-bold text-2xl tracking-wide text-white">
             Mirai
           </span>
-        </a>
+        </Link>
 
         
         <nav className="hidden lg:flex items-center gap-8">
-          <a href="#" className="font-montserrat font-semibold text-white/90 hover:text-brand-accent transition-colors duration-200">{t.home}</a>
+          <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="font-montserrat font-semibold text-white/90 hover:text-brand-accent transition-colors duration-200">{t.home}</Link>
           <a href="#about-us" className="font-montserrat font-semibold text-white/90 hover:text-brand-accent transition-colors duration-200">{t.aboutUs}</a>
           <a href="#testimoni" className="font-montserrat font-semibold text-white/90 hover:text-brand-accent transition-colors duration-200">{t.testimoni}</a>
           <a href="#contact" className="font-montserrat font-semibold text-white/90 hover:text-brand-accent transition-colors duration-200">{t.contact}</a>
@@ -72,18 +73,18 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a 
-              href="#login" 
+            <Link 
+              to="/login" 
               className="px-5 py-2 rounded-md font-sans font-semibold text-brand-accent bg-brand-primary border border-brand-primary/10 hover:bg-brand-primary/80 transition-all duration-300 hover:scale-105 active:scale-95 shadow-md shadow-black/20"
             >
               {t.login}
-            </a>
-            <a 
-              href="#register" 
+            </Link>
+            <Link 
+              to="/register" 
               className="px-5 py-2 rounded-md font-sans font-semibold text-brand-cyan border border-brand-cyan hover:bg-brand-cyan/15 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
             >
               {t.register}
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -147,27 +148,27 @@ export default function Navbar() {
         </button>
 
         <nav className="flex flex-col items-center gap-6">
-          <a onClick={() => setIsOpen(false)} href="#" className="font-montserrat font-bold text-2xl text-white hover:text-brand-accent transition-colors">{t.home}</a>
+          <Link onClick={() => { setIsOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} to="/" className="font-montserrat font-bold text-2xl text-white hover:text-brand-accent transition-colors">{t.home}</Link>
           <a onClick={() => setIsOpen(false)} href="#about-us" className="font-montserrat font-bold text-2xl text-white hover:text-brand-accent transition-colors">{t.aboutUs}</a>
           <a onClick={() => setIsOpen(false)} href="#testimoni" className="font-montserrat font-bold text-2xl text-white hover:text-brand-accent transition-colors">{t.testimoni}</a>
           <a onClick={() => setIsOpen(false)} href="#contact" className="font-montserrat font-bold text-2xl text-white hover:text-brand-accent transition-colors">{t.contact}</a>
         </nav>
 
         <div className="flex flex-col items-center gap-4 w-64 mt-6">
-          <a 
+          <Link 
             onClick={() => setIsOpen(false)}
-            href="#login" 
+            to="/login" 
             className="w-full text-center px-6 py-3 rounded-md font-sans font-semibold text-brand-accent bg-[#0f4859] border border-brand-accent/20 hover:bg-brand-primary transition-colors"
           >
             {t.login}
-          </a>
-          <a 
+          </Link>
+          <Link 
             onClick={() => setIsOpen(false)}
-            href="#register" 
+            to="/register" 
             className="w-full text-center px-6 py-3 rounded-md font-sans font-semibold text-brand-cyan border border-brand-cyan hover:bg-brand-cyan/20 transition-colors"
           >
             {t.register}
-          </a>
+          </Link>
         </div>
       </div>
     </header>

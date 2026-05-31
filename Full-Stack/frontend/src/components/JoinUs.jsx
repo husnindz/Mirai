@@ -1,4 +1,5 @@
 import joinUsImg from '../assets/join-us.png';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
 export default function JoinUs() {
@@ -42,8 +43,8 @@ export default function JoinUs() {
               {t.joinDesc}
             </p>
 
-            <a
-              href="#register"
+            <Link
+              to="/register"
               className="px-[22.50px] py-[18px] bg-brand-primary rounded-[15px] hover:bg-[#0f4859] transition-all duration-300 hover:shadow-lg hover:shadow-brand-primary/30 hover:-translate-y-1 active:translate-y-0 active:scale-95 flex items-center justify-center gap-3 group"
             >
               <span className="text-center text-brand-accent text-lg lg:text-[20px] font-poppins font-semibold leading-[31px] tracking-[0.30px]">
@@ -62,7 +63,7 @@ export default function JoinUs() {
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

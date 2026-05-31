@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import dnaBg from '../assets/dna-login-bg.png';
 import logoIcon from '../assets/logo-icon.png';
 import { useLanguage } from '../context/LanguageContext.jsx';
@@ -13,6 +14,7 @@ export default function Login({ initialTab = 'login' }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   if (initialTab !== prevInitialTab) {
     setActiveTab(initialTab);
@@ -33,7 +35,7 @@ export default function Login({ initialTab = 'login' }) {
       }
       setSuccess(t.successLogin);
       setTimeout(() => {
-        window.location.hash = '#dashboard';
+        navigate('/dashboard');
       }, 1000);
     } else {
       if (!fullname || !email || !password || !confirmPassword) {
@@ -47,7 +49,7 @@ export default function Login({ initialTab = 'login' }) {
       setSuccess(t.successRegister);
       setTimeout(() => {
         setActiveTab('login');
-        window.location.hash = '#login';
+        navigate('/login');
       }, 1000);
     }
   };
@@ -138,16 +140,15 @@ export default function Login({ initialTab = 'login' }) {
 
           <div className="mt-[22px] text-center text-[12px] font-montserrat">
             <span className="text-black">{t.dontHaveAccount}</span>
-            <a
-              href="#register"
+            <Link
+              to="/register"
               onClick={() => {
                 setActiveTab('register');
-                window.location.hash = '#register';
               }}
               className="text-brand-primary underline ml-1 hover:text-brand-primary/80 transition-colors"
             >
               {t.register}
-            </a>
+            </Link>
           </div>
         </div>
       );
@@ -266,16 +267,15 @@ export default function Login({ initialTab = 'login' }) {
 
           <div className="mt-[22px] text-center text-[12px] font-montserrat">
             <span className="text-black">{t.alreadyHaveAccount}</span>
-            <a
-              href="#login"
+            <Link
+              to="/login"
               onClick={() => {
                 setActiveTab('login');
-                window.location.hash = '#login';
               }}
               className="text-brand-primary underline ml-1 hover:text-brand-primary/80 transition-colors"
             >
               {t.login}
-            </a>
+            </Link>
           </div>
         </div>
       );
@@ -285,7 +285,7 @@ export default function Login({ initialTab = 'login' }) {
   return (
     <div className="min-h-screen w-full relative bg-brand-light flex items-center justify-center overflow-hidden font-sans select-none">
       <div className="absolute top-6 left-6 md:left-12 z-50">
-        <a href="#" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-3 group">
           <img
             src={logoIcon}
             alt="Mirai Logo"
@@ -294,12 +294,12 @@ export default function Login({ initialTab = 'login' }) {
           <span className="font-montserrat font-bold text-2xl tracking-wide text-brand-primary">
             Mirai
           </span>
-        </a>
+        </Link>
       </div>
 
       <div className="absolute top-6 right-6 md:right-12 z-50">
-        <a
-          href="#"
+        <Link
+          to="/"
           className="flex items-center gap-2 px-4 py-2 rounded-full font-montserrat font-semibold text-sm text-brand-primary bg-brand-soft border border-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all duration-300 shadow-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -311,7 +311,7 @@ export default function Login({ initialTab = 'login' }) {
             />
           </svg>
           {t.backToHome}
-        </a>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 w-full min-h-screen">
