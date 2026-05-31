@@ -15,8 +15,15 @@ function App() {
     const handleHashChange = () => {
       const hash = window.location.hash;
       setCurrentHash(hash);
-      
-      const isFullPage = ['#login', '#register', '#dashboard', '#check-up', '#history', '#about'].includes(hash);
+
+      const isFullPage = [
+        '#login',
+        '#register',
+        '#dashboard',
+        '#check-up',
+        '#history',
+        '#about',
+      ].includes(hash);
       if (isFullPage) {
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
@@ -26,7 +33,6 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  
   useEffect(() => {
     const hash = currentHash;
     if (hash && ['#about-us', '#testimoni', '#contact'].includes(hash)) {
@@ -60,25 +66,18 @@ function App() {
 
   return (
     <>
-      
       <Navbar />
-      
-      
+
       <main>
-        
         <Hero />
-        
-        
+
         <JoinUs />
-        
-        
+
         <AboutUs />
-        
-        
+
         <StatsAndTestimonials />
       </main>
-      
-      
+
       <Footer />
     </>
   );

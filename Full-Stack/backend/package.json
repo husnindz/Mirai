@@ -9,7 +9,8 @@
     "db:create": "node-pg-migrate create",
     "db:up": "node-pg-migrate up",
     "db:down": "node-pg-migrate down",
-    "db:reset": "node src/utils/db-reset.js"
+    "db:reset": "node src/utils/db-reset.js",
+    "db:seed": "node src/utils/db-seed.js"
   },
   "keywords": [],
   "author": "",

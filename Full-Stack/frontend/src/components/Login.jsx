@@ -33,7 +33,7 @@ export default function Login({ initialTab = 'login' }) {
       }
       setSuccess(t.successLogin);
       setTimeout(() => {
-        window.location.hash = '#dashboard'; 
+        window.location.hash = '#dashboard';
       }, 1000);
     } else {
       if (!fullname || !email || !password || !confirmPassword) {
@@ -56,7 +56,6 @@ export default function Login({ initialTab = 'login' }) {
     if (activeTab === 'login') {
       return (
         <div className="w-full max-w-[401px] min-h-[469px] bg-brand-light p-[29px] rounded-xl border border-white/60 shadow-xl shadow-brand-primary/5 transition-all duration-300">
-          
           <div className="mb-6">
             <h2 className="font-montserrat font-bold text-[36px] text-brand-primary leading-tight mb-2 tracking-tight">
               {t.login}
@@ -66,7 +65,6 @@ export default function Login({ initialTab = 'login' }) {
             </p>
           </div>
 
-          
           {error && (
             <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-poppins flex items-center gap-2">
               <span>{error}</span>
@@ -79,11 +77,12 @@ export default function Login({ initialTab = 'login' }) {
             </div>
           )}
 
-          
           <form onSubmit={handleSubmit} className="space-y-[15px]">
-            
             <div className="relative">
-              <label htmlFor="email" className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1">
+              <label
+                htmlFor="email"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
                 {t.labelEmail || 'Email'}
               </label>
               <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
@@ -99,10 +98,12 @@ export default function Login({ initialTab = 'login' }) {
               </div>
             </div>
 
-            
             <div className="relative">
               <div className="flex items-center justify-between mb-1">
-                <label htmlFor="password" className="text-brand-primary text-[20px] font-montserrat font-normal">
+                <label
+                  htmlFor="password"
+                  className="text-brand-primary text-[20px] font-montserrat font-normal"
+                >
                   {t.labelPassword || 'Password'}
                 </label>
               </div>
@@ -118,13 +119,15 @@ export default function Login({ initialTab = 'login' }) {
                 />
               </div>
               <div className="text-right mt-1.5">
-                <a href="#forgot" className="text-brand-primary text-[12px] font-montserrat font-normal hover:underline">
+                <a
+                  href="#forgot"
+                  className="text-brand-primary text-[12px] font-montserrat font-normal hover:underline"
+                >
                   {t.forgotPassword}
                 </a>
               </div>
             </div>
 
-            
             <button
               type="submit"
               className="w-full h-[35px] bg-brand-primary text-brand-accent font-montserrat font-semibold text-[20px] rounded-[5px] flex items-center justify-center transition-all duration-300 hover:bg-[#0f4859] hover:shadow-md cursor-pointer mt-6"
@@ -133,11 +136,10 @@ export default function Login({ initialTab = 'login' }) {
             </button>
           </form>
 
-          
           <div className="mt-[22px] text-center text-[12px] font-montserrat">
             <span className="text-black">{t.dontHaveAccount}</span>
-            <a 
-              href="#register" 
+            <a
+              href="#register"
               onClick={() => {
                 setActiveTab('register');
                 window.location.hash = '#register';
@@ -152,7 +154,6 @@ export default function Login({ initialTab = 'login' }) {
     } else {
       return (
         <div className="w-full max-w-[401px] min-h-[602px] bg-brand-light p-[29px] rounded-xl border border-white/60 shadow-[0px_4px_4px_rgba(0,0,0,0.25),0px_4px_4px_rgba(0,0,0,0.25)] transition-all duration-300">
-          
           <div className="mb-6">
             <h2 className="font-montserrat font-bold text-[36px] text-brand-primary leading-tight mb-2 tracking-tight">
               {t.register}
@@ -162,7 +163,6 @@ export default function Login({ initialTab = 'login' }) {
             </p>
           </div>
 
-          
           {error && (
             <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-poppins flex items-center gap-2">
               <span>{error}</span>
@@ -175,11 +175,12 @@ export default function Login({ initialTab = 'login' }) {
             </div>
           )}
 
-          
           <form onSubmit={handleSubmit} className="space-y-[15px]">
-            
             <div className="relative">
-              <label htmlFor="fullname" className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1">
+              <label
+                htmlFor="fullname"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
                 {t.labelFullname}
               </label>
               <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
@@ -195,9 +196,11 @@ export default function Login({ initialTab = 'login' }) {
               </div>
             </div>
 
-            
             <div className="relative">
-              <label htmlFor="email" className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1">
+              <label
+                htmlFor="email"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
                 {t.labelEmail || 'Email'}
               </label>
               <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
@@ -213,9 +216,11 @@ export default function Login({ initialTab = 'login' }) {
               </div>
             </div>
 
-            
             <div className="relative">
-              <label htmlFor="password" className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1">
+              <label
+                htmlFor="password"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
                 {t.labelPassword || 'Password'}
               </label>
               <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
@@ -231,9 +236,11 @@ export default function Login({ initialTab = 'login' }) {
               </div>
             </div>
 
-            
             <div className="relative">
-              <label htmlFor="confirmPassword" className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
                 {t.labelConfirmPassword}
               </label>
               <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
@@ -249,7 +256,6 @@ export default function Login({ initialTab = 'login' }) {
               </div>
             </div>
 
-            
             <button
               type="submit"
               className="w-full h-[35px] bg-brand-primary text-brand-accent font-montserrat font-semibold text-[20px] rounded-[5px] flex items-center justify-center transition-all duration-300 hover:bg-[#0f4859] hover:shadow-md cursor-pointer mt-6"
@@ -258,11 +264,10 @@ export default function Login({ initialTab = 'login' }) {
             </button>
           </form>
 
-          
           <div className="mt-[22px] text-center text-[12px] font-montserrat">
             <span className="text-black">{t.alreadyHaveAccount}</span>
-            <a 
-              href="#login" 
+            <a
+              href="#login"
               onClick={() => {
                 setActiveTab('login');
                 window.location.hash = '#login';
@@ -279,14 +284,12 @@ export default function Login({ initialTab = 'login' }) {
 
   return (
     <div className="min-h-screen w-full relative bg-brand-light flex items-center justify-center overflow-hidden font-sans select-none">
-      
-      
       <div className="absolute top-6 left-6 md:left-12 z-50">
         <a href="#" className="flex items-center gap-3 group">
-          <img 
-            src={logoIcon} 
-            alt="Mirai Logo" 
-            className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+          <img
+            src={logoIcon}
+            alt="Mirai Logo"
+            className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
           <span className="font-montserrat font-bold text-2xl tracking-wide text-brand-primary">
             Mirai
@@ -295,73 +298,69 @@ export default function Login({ initialTab = 'login' }) {
       </div>
 
       <div className="absolute top-6 right-6 md:right-12 z-50">
-        <a 
-          href="#" 
+        <a
+          href="#"
           className="flex items-center gap-2 px-4 py-2 rounded-full font-montserrat font-semibold text-sm text-brand-primary bg-brand-soft border border-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all duration-300 shadow-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           {t.backToHome}
         </a>
       </div>
 
-      
       <div className="grid grid-cols-1 lg:grid-cols-12 w-full min-h-screen">
-        
-        
         {activeTab === 'login' ? (
           <>
-            
             <div className="relative hidden lg:block lg:col-span-7 h-full overflow-hidden bg-white select-none">
-              <div 
+              <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[12000ms] hover:scale-105"
-                style={{ 
+                style={{
                   backgroundImage: `url(${dnaBg})`,
-                  clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)' 
+                  clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)',
                 }}
               />
-              <div 
+              <div
                 className="absolute inset-0 bg-gradient-to-tr from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
                 style={{
-                  clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)'
+                  clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)',
                 }}
               />
             </div>
 
-            
             <div className="col-span-12 lg:col-span-5 flex flex-col justify-center items-center px-6 md:px-16 lg:px-12 xl:px-20 py-20 bg-brand-light z-10">
               {renderForm()}
             </div>
           </>
         ) : (
           <>
-            
             <div className="col-span-12 lg:col-span-5 flex flex-col justify-center items-center px-6 md:px-16 lg:px-12 xl:px-20 py-20 bg-brand-light z-10 order-2 lg:order-1">
               {renderForm()}
             </div>
 
-            
             <div className="relative hidden lg:block lg:col-span-7 h-full overflow-hidden bg-white select-none order-1 lg:order-2">
-              <div 
+              <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[12000ms] hover:scale-105"
-                style={{ 
+                style={{
                   backgroundImage: `url(${dnaBg})`,
-                  clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)' 
+                  clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)',
                 }}
               />
-              <div 
+              <div
                 className="absolute inset-0 bg-gradient-to-tl from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
                 style={{
-                  clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)'
+                  clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)',
                 }}
               />
             </div>
           </>
         )}
-
       </div>
-
     </div>
   );
 }
