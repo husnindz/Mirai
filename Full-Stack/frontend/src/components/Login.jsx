@@ -319,14 +319,14 @@ export default function Login({ initialTab = 'login' }) {
           <>
             <div className="relative hidden lg:block lg:col-span-7 h-full overflow-hidden bg-white select-none">
               <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[12000ms] hover:scale-105"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-12000 hover:scale-105"
                 style={{
                   backgroundImage: `url(${dnaBg})`,
                   clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)',
                 }}
               />
               <div
-                className="absolute inset-0 bg-gradient-to-tr from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
+                className="absolute inset-0 bg-linear-to-tr from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
                 style={{
                   clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)',
                 }}
@@ -345,14 +345,14 @@ export default function Login({ initialTab = 'login' }) {
 
             <div className="relative hidden lg:block lg:col-span-7 h-full overflow-hidden bg-white select-none order-1 lg:order-2">
               <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[12000ms] hover:scale-105"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-12000 hover:scale-105"
                 style={{
                   backgroundImage: `url(${dnaBg})`,
                   clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)',
                 }}
               />
               <div
-                className="absolute inset-0 bg-gradient-to-tl from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
+                className="absolute inset-0 bg-linear-to-tl from-brand-primary/10 via-brand-cyan/5 to-transparent pointer-events-none"
                 style={{
                   clipPath: 'polygon(22% 0, 100% 0, 100% 100%, 0 100%)',
                 }}

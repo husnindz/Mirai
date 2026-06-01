@@ -23,6 +23,16 @@
     font-family: var(--font-sans);
     overflow-x: hidden;
   }
+
+  button,
+  a,
+  [role="button"],
+  [tabindex]:not([tabindex="-1"]),
+  label[for],
+  select,
+  summary {
+    cursor: pointer;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -37,4 +47,9 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #0f4859;
+}
+
+svg,
+svg * {
+  outline: none;
 }
