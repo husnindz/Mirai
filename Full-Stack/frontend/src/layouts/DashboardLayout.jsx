@@ -63,14 +63,17 @@ export default function DashboardLayout() {
               : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
 
             const mapClassIdToName = (classVal) => {
-              if (classVal === 1 || classVal === '1' || classVal === 'Jantung') return 'Jantung';
-              if (classVal === 2 || classVal === '2' || classVal === 'Penyakit Dalam') return 'Penyakit Dalam';
-              if (classVal === 3 || classVal === '3' || classVal === 'Paru-paru') return 'Paru-paru';
+              if (!classVal) return 'Penyakit Dalam';
+              const strVal = String(classVal).trim().toLowerCase();
+              if (strVal === '1' || strVal === 'jantung' || strVal === 'penyakit jantung' || strVal === 'heart disease') return 'Jantung';
+              if (strVal === '2' || strVal === 'penyakit dalam' || strVal === 'internal disease' || strVal === 'internal medicine') return 'Penyakit Dalam';
+              if (strVal === '3' || strVal === 'paru-paru' || strVal === 'paru' || strVal === 'penyakit paru-paru' || strVal === 'lung disease') return 'Paru-paru';
+              
               // Fallback jika berupa mainPrediction.disease_id
-              const mainPredId = mainPrediction.disease_id;
-              if (mainPredId === 1 || mainPredId === '1') return 'Jantung';
-              if (mainPredId === 2 || mainPredId === '2') return 'Penyakit Dalam';
-              if (mainPredId === 3 || mainPredId === '3') return 'Paru-paru';
+              const mainPredId = String(mainPrediction.disease_id || '').trim();
+              if (mainPredId === '1') return 'Jantung';
+              if (mainPredId === '2') return 'Penyakit Dalam';
+              if (mainPredId === '3') return 'Paru-paru';
               return classVal || 'Penyakit Dalam';
             };
 
@@ -78,10 +81,10 @@ export default function DashboardLayout() {
             if (item.predictions) {
               item.predictions.forEach((pred) => {
                 const name = mapClassIdToName(pred.disease_name);
-                const probPercent = Math.round(pred.probability * 100);
-                if (name === 'Penyakit Dalam') scores.penyakitDalam = probPercent;
-                else if (name === 'Jantung') scores.jantung = probPercent;
-                else if (name === 'Paru-paru') scores.paruParu = probPercent;
+                const probVal = pred.probability;
+                if (name === 'Penyakit Dalam') scores.penyakitDalam = probVal;
+                else if (name === 'Jantung') scores.jantung = probVal;
+                else if (name === 'Paru-paru') scores.paruParu = probVal;
               });
             }
 

@@ -110,16 +110,30 @@ export default function CheckUp() {
       };
 
       const mapClassIdToName = (classVal) => {
-        if (classVal === 1 || classVal === '1' || classVal === 'Jantung') return 'Jantung';
-        if (classVal === 2 || classVal === '2' || classVal === 'Penyakit Dalam') return 'Penyakit Dalam';
-        if (classVal === 3 || classVal === '3' || classVal === 'Paru-paru') return 'Paru-paru';
+        if (!classVal) return 'Penyakit Dalam';
+        const strVal = String(classVal).trim().toLowerCase();
+        if (strVal === '1' || strVal === 'jantung' || strVal === 'penyakit jantung' || strVal === 'heart disease') return 'Jantung';
+        if (strVal === '2' || strVal === 'penyakit dalam' || strVal === 'internal disease' || strVal === 'internal medicine') return 'Penyakit Dalam';
+        if (strVal === '3' || strVal === 'paru-paru' || strVal === 'paru' || strVal === 'penyakit paru-paru' || strVal === 'lung disease') return 'Paru-paru';
+        
         // Fallback dari mainPrediction disease_id jika ada
-        const mainPredId = mainPrediction.disease_id;
-        if (mainPredId === 1 || mainPredId === '1') return 'Jantung';
-        if (mainPredId === 2 || mainPredId === '2') return 'Penyakit Dalam';
-        if (mainPredId === 3 || mainPredId === '3') return 'Paru-paru';
+        const mainPredId = String(mainPrediction.disease_id || '').trim();
+        if (mainPredId === '1') return 'Jantung';
+        if (mainPredId === '2') return 'Penyakit Dalam';
+        if (mainPredId === '3') return 'Paru-paru';
         return 'Penyakit Dalam'; // Fallback umum
       };
+
+      const scores = { penyakitDalam: 0, jantung: 0, paruParu: 0 };
+      if (savedData.predictions) {
+        savedData.predictions.forEach((pred) => {
+          const name = mapClassIdToName(pred.disease_name);
+          const probVal = pred.probability;
+          if (name === 'Penyakit Dalam') scores.penyakitDalam = probVal;
+          else if (name === 'Jantung') scores.jantung = probVal;
+          else if (name === 'Paru-paru') scores.paruParu = probVal;
+        });
+      }
 
       const newRecord = {
         id: savedData.check_up_id,
@@ -131,7 +145,8 @@ export default function CheckUp() {
           : mainPrediction.risk === 'Medium'
             ? 'bg-[#F2C039] text-[#836512]'
             : 'bg-[#17ADB4] text-[#084F63]',
-        score: Math.round(mainPrediction.probability * 100)
+        score: Math.round(mainPrediction.probability * 100),
+        scores
       };
 
       onFinish(newRecord);

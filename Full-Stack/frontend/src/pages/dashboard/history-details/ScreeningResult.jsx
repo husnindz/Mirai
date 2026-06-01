@@ -74,6 +74,19 @@ export default function ScreeningResult({ selectedHistoryItem, translateCategory
           {language === 'id' ? 'Skor per Kategori' : 'Score per Category'}
         </span>
 
+        <div className="space-y-1">
+          <div className="flex justify-between font-poppins text-[14px] text-brand-primary leading-none">
+            <span>{translateCategory('Jantung')}</span>
+            <span>{selectedHistoryItem.scores.jantung.toFixed(2)}</span>
+          </div>
+          <div className="w-full h-[12px] bg-[#96D8C3] rounded-[30px] relative overflow-hidden">
+            <div
+              className="h-full bg-brand-primary rounded-[30px] transition-all"
+              style={{ width: `${selectedHistoryItem.scores.jantung * 100}%` }}
+            />
+          </div>
+        </div>
+
         <div className="space-y-[15px] flex-1 flex flex-col justify-center">
           <div className="space-y-1">
             <div className="flex justify-between font-poppins text-[14px] text-brand-primary leading-none">
@@ -84,19 +97,6 @@ export default function ScreeningResult({ selectedHistoryItem, translateCategory
               <div
                 className="h-full bg-brand-primary rounded-[30px] transition-all"
                 style={{ width: `${selectedHistoryItem.scores.penyakitDalam * 100}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex justify-between font-poppins text-[14px] text-brand-primary leading-none">
-              <span>{translateCategory('Jantung')}</span>
-              <span>{selectedHistoryItem.scores.jantung.toFixed(2)}</span>
-            </div>
-            <div className="w-full h-[12px] bg-[#96D8C3] rounded-[30px] relative overflow-hidden">
-              <div
-                className="h-full bg-brand-primary rounded-[30px] transition-all"
-                style={{ width: `${selectedHistoryItem.scores.jantung * 100}%` }}
               />
             </div>
           </div>

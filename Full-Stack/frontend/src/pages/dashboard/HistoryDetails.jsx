@@ -29,8 +29,18 @@ export default function HistoryDetails() {
     if (!isoStr) return '';
     const date = new Date(isoStr);
     const monthsId = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
     const day = String(date.getDate()).padStart(2, '0');
     const month = monthsId[date.getMonth()];
@@ -52,9 +62,12 @@ export default function HistoryDetails() {
         const raw = result.data;
 
         // Cari prediksi utama dengan probabilitas tertinggi
-        const mainPrediction = raw.predictions && raw.predictions.length > 0
-          ? raw.predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current)
-          : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+        const mainPrediction =
+          raw.predictions && raw.predictions.length > 0
+            ? raw.predictions.reduce((prev, current) =>
+                prev.probability > current.probability ? prev : current,
+              )
+            : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
 
         const checkStatus = (val, min, max) => {
           const num = parseFloat(val);
@@ -64,38 +77,106 @@ export default function HistoryDetails() {
         };
 
         const parameters = {
-          cholesterol: { value: String(raw.cholesterol_total), ...checkStatus(raw.cholesterol_total, 0, 200), unit: 'mg/dL', range: '0 - 200' },
-          creatinine: { value: String(raw.creatinine), ...checkStatus(raw.creatinine, 0.6, 1.1), unit: 'mg/dL', range: '0.6 - 1.1' },
-          fbs: { value: String(raw.fbs), ...checkStatus(raw.fbs, 70, 100), unit: 'mg/dL', range: '70 - 100' },
-          rbs: { value: String(raw.rbs), ...checkStatus(raw.rbs, 70, 110), unit: 'mg/dL', range: '70 - 110' },
-          hgb: { value: String(raw.hgb), ...checkStatus(raw.hgb, 12, 16), unit: 'g/dL', range: '12 - 16' },
-          lymphocyte: { value: String(raw.lymphocyte_percent), ...checkStatus(raw.lymphocyte_percent, 20, 35), unit: '%', range: '20 - 35' },
-          mch: { value: String(raw.mch), ...checkStatus(raw.mch, 27, 34), unit: 'pg', range: '27 - 34' },
-          mchc: { value: String(raw.mchc), ...checkStatus(raw.mchc, 32, 36), unit: 'g/dL', range: '32 - 36' },
-          mcv: { value: String(raw.mcv), ...checkStatus(raw.mcv, 80, 100), unit: 'fL', range: '80 - 100' },
-          ureum: { value: String(raw.urea), ...checkStatus(raw.urea, 17, 43), unit: 'mg/dL', range: '17 - 43' },
-          wbc: { value: String(raw.wbc), ...checkStatus(raw.wbc, 4, 11), unit: '10³/µL', range: '4 - 11' },
+          cholesterol: {
+            value: String(raw.cholesterol_total),
+            ...checkStatus(raw.cholesterol_total, 0, 200),
+            unit: 'mg/dL',
+            range: '0 - 200',
+          },
+          creatinine: {
+            value: String(raw.creatinine),
+            ...checkStatus(raw.creatinine, 0.6, 1.1),
+            unit: 'mg/dL',
+            range: '0.6 - 1.1',
+          },
+          fbs: {
+            value: String(raw.fbs),
+            ...checkStatus(raw.fbs, 70, 100),
+            unit: 'mg/dL',
+            range: '70 - 100',
+          },
+          rbs: {
+            value: String(raw.rbs),
+            ...checkStatus(raw.rbs, 70, 110),
+            unit: 'mg/dL',
+            range: '70 - 110',
+          },
+          hgb: {
+            value: String(raw.hgb),
+            ...checkStatus(raw.hgb, 12, 16),
+            unit: 'g/dL',
+            range: '12 - 16',
+          },
+          lymphocyte: {
+            value: String(raw.lymphocyte_percent),
+            ...checkStatus(raw.lymphocyte_percent, 20, 35),
+            unit: '%',
+            range: '20 - 35',
+          },
+          mch: {
+            value: String(raw.mch),
+            ...checkStatus(raw.mch, 27, 34),
+            unit: 'pg',
+            range: '27 - 34',
+          },
+          mchc: {
+            value: String(raw.mchc),
+            ...checkStatus(raw.mchc, 32, 36),
+            unit: 'g/dL',
+            range: '32 - 36',
+          },
+          mcv: {
+            value: String(raw.mcv),
+            ...checkStatus(raw.mcv, 80, 100),
+            unit: 'fL',
+            range: '80 - 100',
+          },
+          ureum: {
+            value: String(raw.urea),
+            ...checkStatus(raw.urea, 17, 43),
+            unit: 'mg/dL',
+            range: '17 - 43',
+          },
+          wbc: {
+            value: String(raw.wbc),
+            ...checkStatus(raw.wbc, 4, 11),
+            unit: '10³/µL',
+            range: '4 - 11',
+          },
         };
 
         const abnormals = [];
         Object.entries(parameters).forEach(([key, param]) => {
           if (param.status !== 'Normal') {
             const displayName =
-              key === 'cholesterol' ? 'Cholesterol Total' :
-              key === 'creatinine' ? 'Creatinin' :
-              key === 'fbs' ? 'FBS (Gula Darah Puasa)' :
-              key === 'rbs' ? 'RBS (Gula Darah Sewaktu)' :
-              key === 'hgb' ? 'Hgb (Hemoglobin)' :
-              key === 'lymphocyte' ? 'Lymfosit' : key.toUpperCase();
+              key === 'cholesterol'
+                ? 'Cholesterol Total'
+                : key === 'creatinine'
+                  ? 'Creatinin'
+                  : key === 'fbs'
+                    ? 'FBS (Gula Darah Puasa)'
+                    : key === 'rbs'
+                      ? 'RBS (Gula Darah Sewaktu)'
+                      : key === 'hgb'
+                        ? 'Hgb (Hemoglobin)'
+                        : key === 'lymphocyte'
+                          ? 'Lymfosit'
+                          : key.toUpperCase();
             abnormals.push(`${displayName} (${param.status.toLowerCase()})`);
           }
         });
 
         const categoryText = mainPrediction.disease_name || 'Penyakit Dalam';
-        const riskText = mainPrediction.risk === 'High' ? 'Tinggi' : mainPrediction.risk === 'Medium' ? 'Sedang' : 'Rendah';
-        const abnormalText = abnormals.length > 0
-          ? `Ditemukan ${abnormals.length} parameter abnormal: ${abnormals.join(', ')}. Pola hasil paling mendekati kategori ${categoryText.toLowerCase()} dengan tingkat risiko ${riskText.toLowerCase()}.`
-          : 'Semua parameter dalam rentang normal.';
+        const riskText =
+          mainPrediction.risk === 'High'
+            ? 'Tinggi'
+            : mainPrediction.risk === 'Medium'
+              ? 'Sedang'
+              : 'Rendah';
+        const abnormalText =
+          abnormals.length > 0
+            ? `Ditemukan ${abnormals.length} parameter abnormal: ${abnormals.join(', ')}. Pola hasil paling mendekati kategori ${categoryText.toLowerCase()} dengan tingkat risiko ${riskText.toLowerCase()}.`
+            : 'Semua parameter dalam rentang normal.';
 
         const scores = {
           penyakitDalam: 0.2,
@@ -117,15 +198,16 @@ export default function HistoryDetails() {
           category: categoryText,
           date: parseAndFormatDate(raw.created_at),
           risk: riskText,
-          riskColor: mainPrediction.risk === 'High'
-            ? 'bg-[#EB5050] text-[#530505]'
-            : mainPrediction.risk === 'Medium'
-              ? 'bg-[#F2C039] text-[#836512]'
-              : 'bg-[#17ADB4] text-[#084F63]',
+          riskColor:
+            mainPrediction.risk === 'High'
+              ? 'bg-[#EB5050] text-[#530505]'
+              : mainPrediction.risk === 'Medium'
+                ? 'bg-[#F2C039] text-[#836512]'
+                : 'bg-[#17ADB4] text-[#084F63]',
           score: Math.round(mainPrediction.probability * 100),
           parameters,
           abnormalText,
-          scores
+          scores,
         });
       } catch (err) {
         console.error(err);
@@ -139,11 +221,19 @@ export default function HistoryDetails() {
   }, [id]);
 
   if (loading) {
-    return <div className="p-12 text-center text-brand-primary font-poppins">Memuat detail riwayat...</div>;
+    return (
+      <div className="p-12 text-center text-brand-primary font-poppins">
+        Memuat detail riwayat...
+      </div>
+    );
   }
 
   if (error || !selectedHistoryItem) {
-    return <div className="p-12 text-center text-rose-600 font-poppins">{error || 'Data riwayat tidak ditemukan'}</div>;
+    return (
+      <div className="p-12 text-center text-rose-600 font-poppins">
+        {error || 'Data riwayat tidak ditemukan'}
+      </div>
+    );
   }
 
   return (
@@ -165,10 +255,10 @@ export default function HistoryDetails() {
         translateStatus={translateStatus}
       />
 
-      <RecommendationBoxes
+      {/* <RecommendationBoxes
         selectedHistoryItem={selectedHistoryItem}
         translateAbnormalText={translateAbnormalText}
-      />
+      /> */}
 
       <Disclaimer />
     </div>

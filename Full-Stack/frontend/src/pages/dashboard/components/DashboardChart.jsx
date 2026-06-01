@@ -35,9 +35,9 @@ export default function DashboardChart({ historyList = [], translateCategory }) 
 
     return {
       month: dateLabel || 'Check',
-      dalam: item.scores?.penyakitDalam || 0,
-      jantung: item.scores?.jantung || 0,
-      paru: item.scores?.paruParu || 0
+      dalam: Math.round((item.scores?.penyakitDalam || 0) * 100),
+      jantung: Math.round((item.scores?.jantung || 0) * 100),
+      paru: Math.round((item.scores?.paruParu || 0) * 100)
     };
   });
 
@@ -87,6 +87,7 @@ export default function DashboardChart({ historyList = [], translateCategory }) 
             <Tooltip
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
               labelStyle={{ fontWeight: 'bold', color: '#262626' }}
+              formatter={(value, name) => [`${value}%`, name]}
             />
             <Area type="monotone" dataKey="dalam" name={translateCategory('Penyakit Dalam')} stroke="#146178" strokeWidth={2.5} fillOpacity={1} fill="url(#colorDalam)" activeDot={{ r: 6 }} />
             <Area type="monotone" dataKey="jantung" name={translateCategory('Jantung')} stroke="#1F78B4" strokeWidth={2.5} fillOpacity={1} fill="url(#colorJantung)" activeDot={{ r: 6 }} />
