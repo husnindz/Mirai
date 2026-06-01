@@ -33,10 +33,31 @@ export default function Login({ initialTab = 'login' }) {
         setError(t.errorFillFields);
         return;
       }
-      setSuccess(t.successLogin);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
+
+      fetch('http://localhost:3000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || 'Login failed!');
+        }
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('userEmail', data.data.email);
+        localStorage.setItem('userName', data.data.name || 'Jati Sri Pamungkas');
+        setSuccess(t.successLogin);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
     } else {
       if (!fullname || !email || !password || !confirmPassword) {
         setError(t.errorAllRequired);
@@ -46,11 +67,34 @@ export default function Login({ initialTab = 'login' }) {
         setError(t.errorPasswordMatch);
         return;
       }
-      setSuccess(t.successRegister);
-      setTimeout(() => {
-        setActiveTab('login');
-        navigate('/login');
-      }, 1000);
+
+      fetch('http://localhost:3000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name: fullname,
+          age: 25, // default fallback
+          gender: 'Laki-laki' // default fallback
+        })
+      })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || 'Registration failed!');
+        }
+        setSuccess(t.successRegister);
+        setTimeout(() => {
+          setActiveTab('login');
+          navigate('/login');
+        }, 1000);
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
     }
   };
 

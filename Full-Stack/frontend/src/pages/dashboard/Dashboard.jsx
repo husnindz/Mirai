@@ -21,7 +21,7 @@ export default function DashboardHome({
       <DashboardHeader username={username} />
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-12">
-        <DashboardChart translateCategory={translateCategory} />
+        <DashboardChart historyList={historyList} translateCategory={translateCategory} />
 
         <DashboardHistory
           historyList={historyList}
@@ -33,7 +33,7 @@ export default function DashboardHome({
         />
       </div>
 
-      <AbnormalParameters />
+      <AbnormalParameters historyList={historyList} />
     </>
   );
 }

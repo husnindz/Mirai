@@ -2,16 +2,49 @@ import React from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 
-export default function DashboardChart({ translateCategory }) {
+export default function DashboardChart({ historyList = [], translateCategory }) {
   const { language, t } = useLanguage();
 
-  const chartData = [
-    { month: language === 'id' ? 'Jan' : 'Jan', dalam: 25, jantung: 75, paru: 65 },
-    { month: language === 'id' ? 'Feb' : 'Feb', dalam: 40, jantung: 45, paru: 85 },
-    { month: language === 'id' ? 'Mar' : 'Mar', dalam: 35, jantung: 50, paru: 40 },
-    { month: language === 'id' ? 'Apr' : 'Apr', dalam: 80, jantung: 90, paru: 70 },
-    { month: language === 'id' ? 'Mei' : 'May', dalam: 60, jantung: 65, paru: 60 },
-  ];
+  // Ambil maksimal 7 data pemeriksaan terbaru, lalu balikkan agar terurut kronologis (lama ke baru)
+  const sortedHistory = [...historyList].slice(0, 7).reverse();
+
+  // Map data riwayat riil ke format yang dimengerti oleh Recharts AreaChart
+  const mappedChartData = sortedHistory.map((item) => {
+    let dateLabel = '';
+    try {
+      const parts = item.date.split(' ');
+      if (parts.length >= 2) {
+        const day = parts[0]; // misal '16'
+        const rawMonth = parts[1]; // misal 'Mei' atau 'May'
+        const timePart = item.date.split(',')[1] || ''; // misal ' 13.21'
+        let monthLabel = '';
+        if (language === 'en') {
+          monthLabel = rawMonth
+            .replace('Januari', 'Jan').replace('Februari', 'Feb').replace('Maret', 'Mar')
+            .replace('April', 'Apr').replace('Mei', 'May').replace('Juni', 'Jun')
+            .replace('Juli', 'Jul').replace('Agustus', 'Aug').replace('September', 'Sep')
+            .replace('Oktober', 'Oct').replace('November', 'Nov').replace('Desember', 'Dec');
+        } else {
+          monthLabel = rawMonth.slice(0, 3); // Ambil 3 huruf pertama, misal 'Mei', 'Jan'
+        }
+        dateLabel = `${day} ${monthLabel},${timePart}`; // Hasil: '16 Mei, 13.21'
+      }
+    } catch (e) {
+      dateLabel = 'Check';
+    }
+
+    return {
+      month: dateLabel || 'Check',
+      dalam: item.scores?.penyakitDalam || 0,
+      jantung: item.scores?.jantung || 0,
+      paru: item.scores?.paruParu || 0
+    };
+  });
+
+  // Gunakan data riil jika ada, jika tidak sediakan default state kosong agar chart tidak error
+  const chartData = mappedChartData.length > 0
+    ? mappedChartData
+    : [{ month: language === 'id' ? 'Belum Ada Data' : 'No Data', dalam: 0, jantung: 0, paru: 0 }];
 
   return (
     <div className="col-span-1 xl:col-span-8 bg-[#EDFBFF] border border-[#AFAFAF] rounded-[20px] p-6 shadow-sm flex flex-col justify-between">
@@ -55,9 +88,9 @@ export default function DashboardChart({ translateCategory }) {
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
               labelStyle={{ fontWeight: 'bold', color: '#262626' }}
             />
-            <Area type="natural" dataKey="dalam" name={translateCategory('Penyakit Dalam')} stroke="#146178" strokeWidth={2.5} fillOpacity={1} fill="url(#colorDalam)" activeDot={{ r: 6 }} />
-            <Area type="natural" dataKey="jantung" name={translateCategory('Jantung')} stroke="#1F78B4" strokeWidth={2.5} fillOpacity={1} fill="url(#colorJantung)" activeDot={{ r: 6 }} />
-            <Area type="natural" dataKey="paru" name={translateCategory('Paru-paru')} stroke="#17ADB4" strokeWidth={2.5} fillOpacity={1} fill="url(#colorParu)" activeDot={{ r: 6 }} />
+            <Area type="monotone" dataKey="dalam" name={translateCategory('Penyakit Dalam')} stroke="#146178" strokeWidth={2.5} fillOpacity={1} fill="url(#colorDalam)" activeDot={{ r: 6 }} />
+            <Area type="monotone" dataKey="jantung" name={translateCategory('Jantung')} stroke="#1F78B4" strokeWidth={2.5} fillOpacity={1} fill="url(#colorJantung)" activeDot={{ r: 6 }} />
+            <Area type="monotone" dataKey="paru" name={translateCategory('Paru-paru')} stroke="#17ADB4" strokeWidth={2.5} fillOpacity={1} fill="url(#colorParu)" activeDot={{ r: 6 }} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

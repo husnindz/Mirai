@@ -1,4 +1,4 @@
-import { insertCheckUp, insertDiseasePrediction, findPredictionHistoryByUserId } from '../models/predictions.js';
+import { insertCheckUp, insertDiseasePrediction, findPredictionHistoryByUserId, findPredictionHistoryById } from '../models/predictions.js';
 
 // Configuration URL for the FastAPI Prediction Service
 const MODEL_SERVICE_URL = process.env.MODEL_SERVICE_URL || 'http://localhost:8000';
@@ -174,34 +174,21 @@ export async function getPredictionHistory(req, res) {
       if (!historyMap[row.check_up_id]) {
         historyMap[row.check_up_id] = {
           check_up_id: row.check_up_id,
-          cholesterol_total: parseFloat(row.cholesterol),
-          creatinine: parseFloat(row.creatinin),
-          fbs: parseFloat(row.fbs),
-          rbs: parseFloat(row.rbs),
-          hgb: parseFloat(row.hgb),
-          lymphocyte_percent: parseFloat(row.lymfosit),
-          mch: parseFloat(row.mch),
-          mchc: parseFloat(row.mchc),
-          mcv: parseFloat(row.mcv),
-          urea: parseFloat(row.ureum),
-          wbc: parseFloat(row.wbc),
           created_at: row.check_up_created_at,
           predictions: []
         };
       }
 
-      if (row.prediction_id) {
+      if (row.disease_name) {
         historyMap[row.check_up_id].predictions.push({
-          prediction_id: row.prediction_id,
-          disease_id: row.disease_id,
           disease_name: row.disease_name,
-          probability: parseFloat(row.probability),
+          probability: row.probability !== null && row.probability !== undefined ? parseFloat(row.probability) : null,
           risk: row.risk
         });
       }
     }
 
-    const historyList = Object.values(historyMap);
+    const historyList = Object.values(historyMap).sort((a, b) => b.check_up_id - a.check_up_id);
 
     res.status(200).json({
       message: 'Success to GET prediction history!',
@@ -214,3 +201,76 @@ export async function getPredictionHistory(req, res) {
     });
   }
 }
+
+/**
+ * GET /predictions/history/:id
+ * Retrieves a single check-up and prediction history by ID for the authenticated user.
+ */
+export async function getHistoryById(req, res) {
+  try {
+    const userId = req.user.user_id;
+    if (!userId) {
+      return res.status(401).json({
+        message: 'Unauthorized. User ID is missing!'
+      });
+    }
+
+    const checkUpId = req.params.id;
+    if (!checkUpId) {
+      return res.status(400).json({
+        message: 'Check-up ID is required'
+      });
+    }
+
+    const { rows } = await findPredictionHistoryById(checkUpId, userId);
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: 'Prediction history not found'
+      });
+    }
+
+    // Since we only query for one check_up_id, we can group the rows into a single history item object
+    const historyItem = {
+      check_up_id: rows[0].check_up_id,
+      cholesterol_total: parseFloat(rows[0].cholesterol),
+      creatinine: parseFloat(rows[0].creatinin),
+      fbs: parseFloat(rows[0].fbs),
+      rbs: parseFloat(rows[0].rbs),
+      hgb: parseFloat(rows[0].hgb),
+      lymphocyte_percent: parseFloat(rows[0].lymfosit),
+      mch: parseFloat(rows[0].mch),
+      mchc: parseFloat(rows[0].mchc),
+      mcv: parseFloat(rows[0].mcv),
+      urea: parseFloat(rows[0].ureum),
+      wbc: parseFloat(rows[0].wbc),
+      created_at: rows[0].check_up_created_at,
+      predictions: []
+    };
+
+    for (const row of rows) {
+      if (row.prediction_id) {
+        historyItem.predictions.push({
+          prediction_id: row.prediction_id,
+          disease_id: row.disease_id,
+          disease_name: row.disease_name,
+          probability: parseFloat(row.probability),
+          risk: row.risk
+        });
+      }
+    }
+
+    res.status(200).json({
+      message: 'Success to GET prediction history details!',
+      data: historyItem
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error retrieving prediction history details',
+      error: error.message
+    });
+  }
+}
+
+// Alias for flexibility
+export const getPredictionHistoryById = getHistoryById;

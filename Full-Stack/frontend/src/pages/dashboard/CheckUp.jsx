@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import { fetchWithAuth } from '../../utils/api.js';
 import CheckUpHeader from './check-up/CheckUpHeader';
 import CheckUpModal from './check-up/CheckUpModal';
 
@@ -63,158 +64,94 @@ export default function CheckUp() {
     const ureumVal = parseFloat(ureum) || 28;
     const wbcVal = parseFloat(wbc) || 9;
 
-    let score = 52;
-    let category = 'Paru-paru';
-    let risk = 'Rendah';
-    let riskColor = 'bg-[#17ADB4] text-[#084F63]';
-
-    if (cholVal > 240 || fbsVal > 125) {
-      score = 82;
-      category = 'Penyakit Dalam';
-      risk = 'Tinggi';
-      riskColor = 'bg-[#EB5050] text-[#530505]';
-    } else if (cholVal > 200 || fbsVal > 100 || hgbVal < 11 || lymphocyteVal > 35) {
-      score = 82;
-      category = 'Penyakit Dalam';
-      risk = 'Sedang';
-      riskColor = 'bg-[#F2C039] text-[#836512]';
-    }
-
-    const today = new Date();
-    const formattedDate =
-      today.toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      }) +
-      `, ${today.getHours().toString().padStart(2, '0')}.${today.getMinutes().toString().padStart(2, '0')}`;
-
-    const checkStatus = (val, min, max) => {
-      const num = parseFloat(val);
-      if (num < min) return { status: 'Rendah', color: 'bg-[#F2C039] text-[#836512]' };
-      if (num > max) return { status: 'Tinggi', color: 'bg-[#EB5050] text-[#890909]' };
-      return { status: 'Normal', color: 'bg-[#17ADB4] text-[#084F63]' };
-    };
-
-    const paramResults = {
-      cholesterol: {
-        value: String(cholVal),
-        ...checkStatus(cholVal, 0, 200),
-        unit: 'mg/dL',
-        range: '0 - 200',
-      },
-      creatinine: {
-        value: String(creatinineVal),
-        ...checkStatus(creatinineVal, 0.6, 1.1),
-        unit: 'mg/dL',
-        range: '0.6 - 1.1',
-      },
-      fbs: {
-        value: String(fbsVal),
-        ...checkStatus(fbsVal, 70, 100),
-        unit: 'mg/dL',
-        range: '70 - 100',
-      },
-      rbs: {
-        value: String(rbsVal),
-        ...checkStatus(rbsVal, 70, 110),
-        unit: 'mg/dL',
-        range: '70 - 110',
-      },
-      hgb: {
-        value: String(hgbVal),
-        ...checkStatus(hgbVal, 12, 16),
-        unit: 'g/dL',
-        range: '12 - 16',
-      },
-      lymphocyte: {
-        value: String(lymphocyteVal),
-        ...checkStatus(lymphocyteVal, 20, 35),
-        unit: '%',
-        range: '20 - 35',
-      },
-      mch: { value: String(mchVal), ...checkStatus(mchVal, 27, 34), unit: 'pg', range: '27 - 34' },
-      mchc: {
-        value: String(mchcVal),
-        ...checkStatus(mchcVal, 32, 36),
-        unit: 'g/dL',
-        range: '32 - 36',
-      },
-      mcv: {
-        value: String(mcvVal),
-        ...checkStatus(mcvVal, 80, 100),
-        unit: 'fL',
-        range: '80 - 100',
-      },
-      ureum: {
-        value: String(ureumVal),
-        ...checkStatus(ureumVal, 17, 43),
-        unit: 'mg/dL',
-        range: '17 - 43',
-      },
-      wbc: {
-        value: String(wbcVal),
-        ...checkStatus(wbcVal, 4, 11),
-        unit: '10³/µL',
-        range: '4 - 11',
-      },
-    };
-
-    const abnormals = [];
-    Object.entries(paramResults).forEach(([key, param]) => {
-      if (param.status !== 'Normal') {
-        const displayName =
-          key === 'cholesterol'
-            ? 'Cholesterol Total'
-            : key === 'creatinine'
-              ? 'Creatinin'
-              : key === 'fbs'
-                ? 'FBS (Gula Darah Puasa)'
-                : key === 'rbs'
-                  ? 'RBS (Gula Darah Sewaktu)'
-                  : key === 'hgb'
-                    ? 'Hgb (Hemoglobin)'
-                    : key === 'lymphocyte'
-                      ? 'Lymfosit'
-                      : key.toUpperCase();
-        abnormals.push(`${displayName} (${param.status.toLowerCase()})`);
+    fetchWithAuth('/predictions', {
+      method: 'POST',
+      body: JSON.stringify({
+        gender: 1, // default
+        age: 25, // default
+        cholesterol: cholVal,
+        creatinin: creatinineVal,
+        fbs: fbsVal,
+        rbs: rbsVal,
+        hgb: hgbVal,
+        lymfosit: lymphocyteVal,
+        mch: mchVal,
+        mchc: mchcVal,
+        mcv: mcvVal,
+        ureum: ureumVal,
+        wbc: wbcVal
+      })
+    })
+    .then(async (res) => {
+      if (!res.ok) {
+        throw new Error('Gagal memproses prediksi di backend');
       }
+      const resJson = await res.json();
+      const savedData = resJson.data;
+
+      // Ambil prediksi dengan probabilitas tertinggi
+      const mainPrediction = savedData.predictions && savedData.predictions.length > 0
+        ? savedData.predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current)
+        : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+
+      const parseAndFormatDate = (isoStr) => {
+        if (!isoStr) return '';
+        const date = new Date(isoStr);
+        const monthsId = [
+          'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = monthsId[date.getMonth()];
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day} ${month} ${year}, ${hours}.${minutes}`;
+      };
+
+      const mapClassIdToName = (classVal) => {
+        if (classVal === 1 || classVal === '1' || classVal === 'Jantung') return 'Jantung';
+        if (classVal === 2 || classVal === '2' || classVal === 'Penyakit Dalam') return 'Penyakit Dalam';
+        if (classVal === 3 || classVal === '3' || classVal === 'Paru-paru') return 'Paru-paru';
+        // Fallback dari mainPrediction disease_id jika ada
+        const mainPredId = mainPrediction.disease_id;
+        if (mainPredId === 1 || mainPredId === '1') return 'Jantung';
+        if (mainPredId === 2 || mainPredId === '2') return 'Penyakit Dalam';
+        if (mainPredId === 3 || mainPredId === '3') return 'Paru-paru';
+        return 'Penyakit Dalam'; // Fallback umum
+      };
+
+      const newRecord = {
+        id: savedData.check_up_id,
+        category: mapClassIdToName(savedData.predicted_class),
+        date: parseAndFormatDate(savedData.created_at),
+        risk: mainPrediction.risk === 'High' ? 'Tinggi' : mainPrediction.risk === 'Medium' ? 'Sedang' : 'Rendah',
+        riskColor: mainPrediction.risk === 'High'
+          ? 'bg-[#EB5050] text-[#530505]'
+          : mainPrediction.risk === 'Medium'
+            ? 'bg-[#F2C039] text-[#836512]'
+            : 'bg-[#17ADB4] text-[#084F63]',
+        score: Math.round(mainPrediction.probability * 100)
+      };
+
+      onFinish(newRecord);
+
+      // Reset form states
+      setCholesterol('');
+      setCreatinine('');
+      setFbs('');
+      setRbs('');
+      setHgb('');
+      setLymphocyte('');
+      setMch('');
+      setMchc('');
+      setMcv('');
+      setUreum('');
+      setWbc('');
+    })
+    .catch((err) => {
+      alert('Error memproses check-up: ' + err.message);
     });
-
-    const abnormalText =
-      abnormals.length > 0
-        ? `Ditemukan ${abnormals.length} parameter abnormal: ${abnormals.join(', ')}. Pola hasil paling mendekati kategori ${category.toLowerCase()} dengan tingkat risiko ${risk.toLowerCase()}.`
-        : 'Semua parameter dalam rentang normal.';
-
-    const newRecord = {
-      id: Date.now(),
-      category,
-      date: formattedDate,
-      risk,
-      riskColor,
-      score,
-      parameters: paramResults,
-      abnormalText,
-      scores: {
-        penyakitDalam: category === 'Penyakit Dalam' ? score / 100 : 0.35,
-        paruParu: category === 'Paru-paru' ? score / 100 : 0.2,
-        jantung: category === 'Jantung' ? score / 100 : 0.4,
-      },
-    };
-
-    onFinish(newRecord);
-
-    setCholesterol('');
-    setCreatinine('');
-    setFbs('');
-    setRbs('');
-    setHgb('');
-    setLymphocyte('');
-    setMch('');
-    setMchc('');
-    setMcv('');
-    setUreum('');
-    setWbc('');
   };
 
   return (

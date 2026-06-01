@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import logoFull from '../assets/logo-full.png';
 import userAvatar from '../assets/user-avatar.png';
 import { useLanguage } from '../context/LanguageContext.jsx';
-import { initialHistoryList } from '../data/dummyData';
+import { fetchWithAuth } from '../utils/api.js';
 import { useFormatCheckUpDate } from '../utils/FormatCheckUpDate.jsx';
 import { useTranslateCheckUp } from '../utils/TranslateCheckUp.jsx';
 
-export default function DashboardLayout({
-  username = 'Jati Sri Pamungkas',
-  email = 'jatispamungkas357@gmail.com',
-}) {
+export default function DashboardLayout() {
+  const username = localStorage.getItem('userName') || 'Jati Sri Pamungkas';
+  const email = localStorage.getItem('userEmail') || 'jatispamungkas357@gmail.com';
+
   const { language, t, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,10 +21,138 @@ export default function DashboardLayout({
 
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [historyList, setHistoryList] = useState(initialHistoryList);
+  const [historyList, setHistoryList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleLogout = () => {
-    navigate('/');
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  const hasToken = !!(accessToken || refreshToken);
+
+  useEffect(() => {
+    if (!hasToken) {
+      navigate('/login', { replace: true });
+    }
+  }, [hasToken, navigate]);
+
+  // Helper untuk parsing ISO date ke format Indonesia (DD Month YYYY, HH.MM)
+  const parseAndFormatDate = (isoStr) => {
+    if (!isoStr) return '';
+    const date = new Date(isoStr);
+    const monthsId = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = monthsId[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day} ${month} ${year}, ${hours}.${minutes}`;
+  };
+
+  useEffect(() => {
+    async function loadPredictions() {
+      try {
+        const response = await fetchWithAuth('/predictions/history');
+        if (response.ok) {
+          const result = await response.json();
+          // Map data ke format yang diharapkan UI frontend
+          const mapped = result.data.map((item) => {
+            const mainPrediction = item.predictions && item.predictions.length > 0
+              ? item.predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current)
+              : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+
+            const mapClassIdToName = (classVal) => {
+              if (classVal === 1 || classVal === '1' || classVal === 'Jantung') return 'Jantung';
+              if (classVal === 2 || classVal === '2' || classVal === 'Penyakit Dalam') return 'Penyakit Dalam';
+              if (classVal === 3 || classVal === '3' || classVal === 'Paru-paru') return 'Paru-paru';
+              // Fallback jika berupa mainPrediction.disease_id
+              const mainPredId = mainPrediction.disease_id;
+              if (mainPredId === 1 || mainPredId === '1') return 'Jantung';
+              if (mainPredId === 2 || mainPredId === '2') return 'Penyakit Dalam';
+              if (mainPredId === 3 || mainPredId === '3') return 'Paru-paru';
+              return classVal || 'Penyakit Dalam';
+            };
+
+            const scores = { penyakitDalam: 0, jantung: 0, paruParu: 0 };
+            if (item.predictions) {
+              item.predictions.forEach((pred) => {
+                const name = mapClassIdToName(pred.disease_name);
+                const probPercent = Math.round(pred.probability * 100);
+                if (name === 'Penyakit Dalam') scores.penyakitDalam = probPercent;
+                else if (name === 'Jantung') scores.jantung = probPercent;
+                else if (name === 'Paru-paru') scores.paruParu = probPercent;
+              });
+            }
+
+            return {
+              id: item.check_up_id,
+              category: mapClassIdToName(mainPrediction.disease_name),
+              date: parseAndFormatDate(item.created_at),
+              risk: mainPrediction.risk === 'High' ? 'Tinggi' : mainPrediction.risk === 'Medium' ? 'Sedang' : 'Rendah',
+              riskColor: mainPrediction.risk === 'High'
+                ? 'bg-[#EB5050] text-[#530505]'
+                : mainPrediction.risk === 'Medium'
+                  ? 'bg-[#F2C039] text-[#836512]'
+                  : 'bg-[#17ADB4] text-[#084F63]',
+              score: Math.round(mainPrediction.probability * 100),
+              scores
+            };
+          });
+          const sorted = mapped.sort((a, b) => b.id - a.id);
+          setHistoryList(sorted);
+        }
+      } catch (err) {
+        console.error('Failed to load predictions history:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPredictions();
+  }, []);
+
+  if (!hasToken) {
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-[#EDFBFF] flex flex-col items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-4 border-brand-primary/20 animate-pulse"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-t-brand-primary animate-spin"></div>
+          </div>
+          <p className="text-brand-primary font-montserrat font-semibold text-[16px] animate-pulse">
+            {language === 'id' ? 'Memverifikasi sesi...' : 'Verifying session...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        await fetch('http://localhost:3000/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ refreshToken })
+        });
+      }
+    } catch (error) {
+      console.error('Error logging out from server:', error);
+    } finally {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      navigate('/');
+    }
   };
 
   return (

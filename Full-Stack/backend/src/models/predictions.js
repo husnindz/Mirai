@@ -26,7 +26,7 @@ export const insertCheckUp = (userId, data) => {
     data.mchc,
     data.mcv,
     data.ureum,
-    data.wbc
+    data.wbc,
   ]);
 };
 
@@ -58,6 +58,30 @@ export const findPredictionHistoryByUserId = (userId) => {
   const SQLQuery = `
     SELECT 
       c.check_up_id,
+      c.created_at AS check_up_created_at,
+      d.disease_name,
+      dp.probability,
+      dp.risk
+    FROM check_up c
+    LEFT JOIN disease_predictions dp ON c.check_up_id = dp.check_up_id
+    LEFT JOIN diseases d ON dp.disease_id = d.disease_id
+    WHERE c.user_id = $1
+    ORDER BY c.created_at DESC, dp.disease_id ASC
+  `;
+
+  return pool.query(SQLQuery, [userId]);
+};
+
+/**
+ * Retrieves a single check-up and its prediction history by check_up_id and userId.
+ * @param {number} checkUpId - ID of the check-up.
+ * @param {number} userId - ID of the user.
+ * @returns {Promise} - Postgres query result.
+ */
+export const findPredictionHistoryById = (checkUpId, userId) => {
+  const SQLQuery = `
+    SELECT 
+      c.check_up_id,
       c.cholesterol,
       c.creatinin,
       c.fbs,
@@ -79,9 +103,9 @@ export const findPredictionHistoryByUserId = (userId) => {
     FROM check_up c
     LEFT JOIN disease_predictions dp ON c.check_up_id = dp.check_up_id
     LEFT JOIN diseases d ON dp.disease_id = d.disease_id
-    WHERE c.user_id = $1
-    ORDER BY c.created_at DESC, dp.disease_id ASC
+    WHERE c.check_up_id = $1 AND c.user_id = $2
+    ORDER BY dp.disease_id ASC
   `;
 
-  return pool.query(SQLQuery, [userId]);
+  return pool.query(SQLQuery, [checkUpId, userId]);
 };
