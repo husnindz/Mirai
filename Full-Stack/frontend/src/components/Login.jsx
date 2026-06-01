@@ -11,9 +11,11 @@ export default function Login({ initialTab = 'login' }) {
   const [password, setPassword] = useState('');
   const [fullname, setFullname] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('Laki-laki');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
 
   if (initialTab !== prevInitialTab) {
@@ -21,6 +23,8 @@ export default function Login({ initialTab = 'login' }) {
     setPrevInitialTab(initialTab);
     setError('');
     setSuccess('');
+    setAge('');
+    setGender('Laki-laki');
   }
 
   const handleSubmit = (e) => {
@@ -59,8 +63,8 @@ export default function Login({ initialTab = 'login' }) {
         setError(err.message);
       });
     } else {
-      if (!fullname || !email || !password || !confirmPassword) {
-        setError(t.errorAllRequired);
+      if (!fullname || !email || !password || !confirmPassword || !age || !gender) {
+        setError(t.errorAllRequired || 'All fields are required');
         return;
       }
       if (password !== confirmPassword) {
@@ -77,8 +81,8 @@ export default function Login({ initialTab = 'login' }) {
           email,
           password,
           name: fullname,
-          age: 25, // default fallback
-          gender: 'Laki-laki' // default fallback
+          age: parseInt(age),
+          gender: gender
         })
       })
       .then(async (res) => {
@@ -198,7 +202,7 @@ export default function Login({ initialTab = 'login' }) {
       );
     } else {
       return (
-        <div className="w-full max-w-[401px] min-h-[602px] bg-brand-light p-[29px] rounded-xl border border-white/60 shadow-[0px_4px_4px_rgba(0,0,0,0.25),0px_4px_4px_rgba(0,0,0,0.25)] transition-all duration-300">
+        <div className="w-full max-w-[401px] min-h-[730px] bg-brand-light p-[29px] rounded-xl border border-white/60 shadow-[0px_4px_4px_rgba(0,0,0,0.25),0px_4px_4px_rgba(0,0,0,0.25)] transition-all duration-300">
           <div className="mb-6">
             <h2 className="font-montserrat font-bold text-[36px] text-brand-primary leading-tight mb-2 tracking-tight">
               {t.register}
@@ -258,6 +262,49 @@ export default function Login({ initialTab = 'login' }) {
                   className="w-full bg-transparent text-[#5C7076] font-poppins text-[13px] placeholder:text-[#5C7076]/65 focus:outline-none"
                   required
                 />
+              </div>
+            </div>
+
+            <div className="relative">
+              <label
+                htmlFor="age"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
+                {language === 'id' ? 'Umur' : 'Age'}
+              </label>
+              <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
+                <input
+                  type="number"
+                  id="age"
+                  placeholder={language === 'id' ? 'Umur (Tahun)' : 'Age (Years)'}
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  className="w-full bg-transparent text-[#5C7076] font-poppins text-[13px] placeholder:text-[#5C7076]/65 focus:outline-none"
+                  required
+                  min="1"
+                  max="120"
+                />
+              </div>
+            </div>
+
+            <div className="relative">
+              <label
+                htmlFor="gender"
+                className="block text-brand-primary text-[20px] font-montserrat font-normal mb-1"
+              >
+                {language === 'id' ? 'Jenis Kelamin' : 'Gender'}
+              </label>
+              <div className="w-full h-[30px] px-[14px] bg-[#EDFBFF] border border-[#8C8C8C] rounded-[5px] flex items-center">
+                <select
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full bg-[#EDFBFF] text-[#5C7076] font-poppins text-[13px] focus:outline-none cursor-pointer"
+                  required
+                >
+                  <option value="Laki-laki">{language === 'id' ? 'Laki-laki' : 'Male'}</option>
+                  <option value="Perempuan">{language === 'id' ? 'Perempuan' : 'Female'}</option>
+                </select>
               </div>
             </div>
 

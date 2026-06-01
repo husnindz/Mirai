@@ -43,49 +43,83 @@ export default function HistoryTable({
         </thead>
 
         <tbody>
-          {currentHistoryItems.map((item, index) => {
-            const rowNum = indexOfFirstItem + index + 1;
-            return (
-              <tr
-                key={item.id}
-                className="h-[49px] border-b border-[#AFAFAF]/40 hover:bg-[#5BF2C2]/20 transition-colors cursor-pointer"
-                onClick={() => handleDrillDownResult(item)}
-              >
-                <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  {rowNum}
-                </td>
-                <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  {formatCheckUpDate(item.date)}
-                </td>
+          {currentHistoryItems.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="py-20 text-center select-none">
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <svg
+                    className="w-12 h-12 text-[#AFAFAF]/60 animate-pulse"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                    />
+                  </svg>
+                  <p className="text-slate-500 font-poppins font-medium text-[15px]">
+                    {language === 'id'
+                      ? 'Belum ada riwayat hasil pemeriksaan medis.'
+                      : 'No medical check-up history found.'}
+                  </p>
+                  <p className="text-[#AFAFAF] font-poppins text-xs">
+                    {language === 'id'
+                      ? 'Silakan lakukan Check-Up terlebih dahulu.'
+                      : 'Please perform a Check-Up first.'}
+                  </p>
+                </div>
+              </td>
+            </tr>
+          ) : (
+            <>
+              {currentHistoryItems.map((item, index) => {
+                const rowNum = indexOfFirstItem + index + 1;
+                return (
+                  <tr
+                    key={item.id}
+                    className="h-[49px] border-b border-[#AFAFAF]/40 hover:bg-[#5BF2C2]/20 transition-colors cursor-pointer"
+                    onClick={() => handleDrillDownResult(item)}
+                  >
+                    <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      {rowNum}
+                    </td>
+                    <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      {formatCheckUpDate(item.date)}
+                    </td>
 
-                <td className="py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  <span className="text-[#262626] sm:text-[14px] text-[11px] font-arimo font-normal whitespace-nowrap">
-                    {translateCategory(item.category)}
-                  </span>
-                </td>
+                    <td className="py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      <span className="text-[#262626] sm:text-[14px] text-[11px] font-arimo font-normal whitespace-nowrap">
+                        {translateCategory(item.category)}
+                      </span>
+                    </td>
 
-                <td className="text-[#262626] sm:text-[14px] text-[11px] font-arimo font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  {item.score}%
-                </td>
-                <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  {translateRisk(item.risk)}
-                </td>
+                    <td className="text-[#262626] sm:text-[14px] text-[11px] font-arimo font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      {item.score}%
+                    </td>
+                    <td className="text-[#262626] sm:text-[14px] text-[11px] font-poppins font-normal py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      {translateRisk(item.risk)}
+                    </td>
 
-                <td className="py-1.5 px-1.5 sm:py-2 sm:px-4">
-                  <ButtonAction setDeleteConfirmId={setDeleteConfirmId} item={item} />
-                </td>
-              </tr>
-            );
-          })}
+                    <td className="py-1.5 px-1.5 sm:py-2 sm:px-4">
+                      <ButtonAction setDeleteConfirmId={setDeleteConfirmId} item={item} />
+                    </td>
+                  </tr>
+                );
+              })}
 
-          {currentHistoryItems.length < 10 &&
-            Array.from({ length: 10 - currentHistoryItems.length }).map((_, idx) => (
-              <tr key={`empty-${idx}`} className="h-[49px] border-b border-[#AFAFAF]/10">
-                <td colSpan={6} className="py-2">
-                  &nbsp;
-                </td>
-              </tr>
-            ))}
+              {currentHistoryItems.length < 10 &&
+                Array.from({ length: 10 - currentHistoryItems.length }).map((_, idx) => (
+                  <tr key={`empty-${idx}`} className="h-[49px] border-b border-[#AFAFAF]/10">
+                    <td colSpan={6} className="py-2">
+                      &nbsp;
+                    </td>
+                  </tr>
+                ))}
+            </>
+          )}
         </tbody>
       </table>
     </div>

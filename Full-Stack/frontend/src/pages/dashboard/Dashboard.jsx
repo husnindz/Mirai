@@ -5,12 +5,10 @@ import DashboardChart from './components/DashboardChart';
 import DashboardHistory from './components/DashboardHistory';
 import AbnormalParameters from './components/AbnormalParameters';
 
-export default function DashboardHome({
-  username = 'Jati Sri Pamungkas',
-  email = 'jatispamungkas357@gmail.com',
-}) {
+export default function DashboardHome() {
   const navigate = useNavigate();
-  const { historyList, formatCheckUpDate, translateCategory, translateRisk } = useOutletContext();
+  const { username, historyList, formatCheckUpDate, translateCategory, translateRisk } =
+    useOutletContext();
 
   const handleDrillDownResult = (item) => {
     navigate(`/dashboard/history/${item.id}`);
