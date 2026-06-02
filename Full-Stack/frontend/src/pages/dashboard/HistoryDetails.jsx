@@ -62,12 +62,15 @@ export default function HistoryDetails() {
         const raw = result.data;
 
         // Cari prediksi utama dengan probabilitas tertinggi
-        const mainPrediction =
-          raw.predictions && raw.predictions.length > 0
-            ? raw.predictions.reduce((prev, current) =>
-                prev.probability > current.probability ? prev : current,
-              )
-            : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+        const maxProb = raw.predictions && raw.predictions.length > 0
+          ? Math.max(...raw.predictions.map(p => p.probability))
+          : 0;
+
+        const mainPrediction = maxProb >= 0.3
+          ? raw.predictions.reduce((prev, current) =>
+              prev.probability > current.probability ? prev : current,
+            )
+          : { disease_name: 'Normal', probability: maxProb, risk: 'Low', disease_id: 0 };
 
         const checkStatus = (val, min, max) => {
           const num = parseFloat(val);

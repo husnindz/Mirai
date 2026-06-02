@@ -7,6 +7,7 @@ export const useTranslateCheckUp = () => {
     if (cat === 'Penyakit Dalam') return language === 'id' ? 'Penyakit Dalam' : 'Internal Disease';
     if (cat === 'Jantung') return language === 'id' ? 'Penyakit Jantung' : 'Heart Disease';
     if (cat === 'Paru-paru') return language === 'id' ? 'Penyakit Paru-paru' : 'Lung Disease';
+    if (cat === 'Normal') return 'Normal';
     return cat;
   };
 

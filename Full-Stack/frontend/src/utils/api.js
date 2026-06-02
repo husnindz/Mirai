@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000'; // Sesuaikan port backend Anda jika berbeda
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 let isRefreshing = false;
 let refreshSubscribers = [];

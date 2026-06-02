@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mirai-model:
+    build:
+      context: ./model
+      dockerfile: Dockerfile
+    container_name: mirai-model
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  mirai-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mirai-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - MODEL_SERVICE_URL=http://mirai-model:8000
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mirai-model
+    restart: unless-stopped

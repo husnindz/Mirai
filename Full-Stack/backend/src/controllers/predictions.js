@@ -1,4 +1,9 @@
-import { insertCheckUp, insertDiseasePrediction, findPredictionHistoryByUserId, findPredictionHistoryById } from '../models/predictions.js';
+import {
+  insertCheckUp,
+  insertDiseasePrediction,
+  findPredictionHistoryByUserId,
+  findPredictionHistoryById,
+} from '../models/predictions.js';
 
 // Configuration URL for the FastAPI Prediction Service
 const MODEL_SERVICE_URL = process.env.MODEL_SERVICE_URL || 'http://localhost:8000';
@@ -10,10 +15,22 @@ const mapGender = (gender) => {
   if (gender === 0 || gender === 1) return gender;
   if (typeof gender === 'string') {
     const lower = gender.trim().toLowerCase();
-    if (lower === 'laki-laki' || lower === 'l' || lower === 'male' || lower === 'm' || lower === '1') {
+    if (
+      lower === 'laki-laki' ||
+      lower === 'l' ||
+      lower === 'male' ||
+      lower === 'm' ||
+      lower === '1'
+    ) {
       return 1;
     }
-    if (lower === 'perempuan' || lower === 'p' || lower === 'female' || lower === 'f' || lower === '0') {
+    if (
+      lower === 'perempuan' ||
+      lower === 'p' ||
+      lower === 'female' ||
+      lower === 'f' ||
+      lower === '0'
+    ) {
       return 0;
     }
   }
@@ -28,16 +45,16 @@ const runPredictionModel = async (inputData) => {
     const response = await fetch(`${MODEL_SERVICE_URL}/predict`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(inputData)
+      body: JSON.stringify(inputData),
     });
-    
+
     if (!response.ok) {
       const errText = await response.text();
       throw new Error(`FastAPI returned status ${response.status}: ${errText}`);
     }
-    
+
     const result = await response.json();
     return result;
   } catch (error) {
@@ -49,30 +66,44 @@ const runPredictionModel = async (inputData) => {
  * Helper to validate and extract prediction inputs
  */
 const validateAndExtractInputs = (body) => {
-  const rawGender = body.gender !== undefined ? body.gender : body.jenis_kelamin !== undefined ? body.jenis_kelamin : body.jk;
+  const rawGender =
+    body.gender !== undefined
+      ? body.gender
+      : body.jenis_kelamin !== undefined
+        ? body.jenis_kelamin
+        : body.jk;
   const genderVal = mapGender(rawGender);
   if (genderVal === null) {
     throw new Error("Field 'gender' is required and must be either 0/1 or Laki-laki/Perempuan");
   }
 
-  const activeAge = body.age !== undefined ? body.age : body.umur_tahun !== undefined ? body.umur_tahun : body.umur;
+  const activeAge =
+    body.age !== undefined ? body.age : body.umur_tahun !== undefined ? body.umur_tahun : body.umur;
   const ageVal = parseFloat(activeAge);
 
   // Read input fields supporting both English and legacy Indonesian names
   const fields = {
     gender: genderVal,
     age: ageVal,
-    cholesterol_total: parseFloat(body.cholesterol_total !== undefined ? body.cholesterol_total : body.cholesterol),
+    cholesterol_total: parseFloat(
+      body.cholesterol_total !== undefined ? body.cholesterol_total : body.cholesterol,
+    ),
     creatinine: parseFloat(body.creatinine !== undefined ? body.creatinine : body.creatinin),
     fbs: parseFloat(body.fbs),
     rbs: parseFloat(body.rbs),
     hgb: parseFloat(body.hgb),
-    lymphocyte_percent: parseFloat(body.lymphocyte_percent !== undefined ? body.lymphocyte_percent : body.lymfosit_persen !== undefined ? body.lymfosit_persen : body.lymfosit),
+    lymphocyte_percent: parseFloat(
+      body.lymphocyte_percent !== undefined
+        ? body.lymphocyte_percent
+        : body.lymfosit_persen !== undefined
+          ? body.lymfosit_persen
+          : body.lymfosit,
+    ),
     mch: parseFloat(body.mch),
     mchc: parseFloat(body.mchc),
     mcv: parseFloat(body.mcv),
     urea: parseFloat(body.urea !== undefined ? body.urea : body.ureum),
-    wbc: parseFloat(body.wbc)
+    wbc: parseFloat(body.wbc),
   };
 
   // Check for NaN values
@@ -94,7 +125,7 @@ export async function createPrediction(req, res) {
     const userId = req.user.user_id;
     if (!userId) {
       return res.status(401).json({
-        message: 'Unauthorized. User ID is missing!'
+        message: 'Unauthorized. User ID is missing!',
       });
     }
 
@@ -114,7 +145,7 @@ export async function createPrediction(req, res) {
       mchc: validatedData.mchc,
       mcv: validatedData.mcv,
       ureum: validatedData.urea,
-      wbc: validatedData.wbc
+      wbc: validatedData.wbc,
     };
 
     const checkUpResult = await insertCheckUp(userId, checkUpData);
@@ -127,11 +158,11 @@ export async function createPrediction(req, res) {
         checkUpId,
         pred.disease_id,
         pred.probability,
-        pred.risk
+        pred.risk,
       );
       savedPredictions.push({
         ...pred,
-        prediction_id: predResult.rows[0].prediction_id
+        prediction_id: predResult.rows[0].prediction_id,
       });
     }
 
@@ -142,13 +173,13 @@ export async function createPrediction(req, res) {
         overall_status: result.overall_status,
         predicted_class: result.predicted_class,
         predictions: savedPredictions,
-        created_at: checkUpResult.rows[0].created_at
-      }
+        created_at: checkUpResult.rows[0].created_at,
+      },
     });
   } catch (error) {
     res.status(400).json({
       message: 'Error processing and saving check-up prediction',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -162,7 +193,7 @@ export async function getPredictionHistory(req, res) {
     const userId = req.user.user_id;
     if (!userId) {
       return res.status(401).json({
-        message: 'Unauthorized. User ID is missing!'
+        message: 'Unauthorized. User ID is missing!',
       });
     }
 
@@ -175,15 +206,18 @@ export async function getPredictionHistory(req, res) {
         historyMap[row.check_up_id] = {
           check_up_id: row.check_up_id,
           created_at: row.check_up_created_at,
-          predictions: []
+          predictions: [],
         };
       }
 
       if (row.disease_name) {
         historyMap[row.check_up_id].predictions.push({
           disease_name: row.disease_name,
-          probability: row.probability !== null && row.probability !== undefined ? parseFloat(row.probability) : null,
-          risk: row.risk
+          probability:
+            row.probability !== null && row.probability !== undefined
+              ? parseFloat(row.probability)
+              : null,
+          risk: row.risk,
         });
       }
     }
@@ -192,12 +226,12 @@ export async function getPredictionHistory(req, res) {
 
     res.status(200).json({
       message: 'Success to GET prediction history!',
-      data: historyList
+      data: historyList,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error retrieving prediction history',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -211,14 +245,14 @@ export async function getHistoryById(req, res) {
     const userId = req.user.user_id;
     if (!userId) {
       return res.status(401).json({
-        message: 'Unauthorized. User ID is missing!'
+        message: 'Unauthorized. User ID is missing!',
       });
     }
 
     const checkUpId = req.params.id;
     if (!checkUpId) {
       return res.status(400).json({
-        message: 'Check-up ID is required'
+        message: 'Check-up ID is required',
       });
     }
 
@@ -226,7 +260,7 @@ export async function getHistoryById(req, res) {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        message: 'Prediction history not found'
+        message: 'Prediction history not found',
       });
     }
 
@@ -245,7 +279,7 @@ export async function getHistoryById(req, res) {
       urea: parseFloat(rows[0].ureum),
       wbc: parseFloat(rows[0].wbc),
       created_at: rows[0].check_up_created_at,
-      predictions: []
+      predictions: [],
     };
 
     for (const row of rows) {
@@ -255,19 +289,19 @@ export async function getHistoryById(req, res) {
           disease_id: row.disease_id,
           disease_name: row.disease_name,
           probability: parseFloat(row.probability),
-          risk: row.risk
+          risk: row.risk,
         });
       }
     }
 
     res.status(200).json({
       message: 'Success to GET prediction history details!',
-      data: historyItem
+      data: historyItem,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error retrieving prediction history details',
-      error: error.message
+      error: error.message,
     });
   }
 }

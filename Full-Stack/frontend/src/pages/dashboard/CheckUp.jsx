@@ -90,9 +90,13 @@ export default function CheckUp() {
       const savedData = resJson.data;
 
       // Ambil prediksi dengan probabilitas tertinggi
-      const mainPrediction = savedData.predictions && savedData.predictions.length > 0
+      const maxProb = savedData.predictions && savedData.predictions.length > 0
+        ? Math.max(...savedData.predictions.map(p => p.probability))
+        : 0;
+
+      const mainPrediction = maxProb >= 0.3
         ? savedData.predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current)
-        : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+        : { disease_name: 'Normal', probability: maxProb, risk: 'Low', disease_id: 0 };
 
       const parseAndFormatDate = (isoStr) => {
         if (!isoStr) return '';
@@ -110,14 +114,16 @@ export default function CheckUp() {
       };
 
       const mapClassIdToName = (classVal) => {
-        if (!classVal) return 'Penyakit Dalam';
+        if (classVal === undefined || classVal === null) return 'Penyakit Dalam';
         const strVal = String(classVal).trim().toLowerCase();
+        if (strVal === '0' || strVal === 'normal' || strVal === 'normal / sehat') return 'Normal';
         if (strVal === '1' || strVal === 'jantung' || strVal === 'penyakit jantung' || strVal === 'heart disease') return 'Jantung';
         if (strVal === '2' || strVal === 'penyakit dalam' || strVal === 'internal disease' || strVal === 'internal medicine') return 'Penyakit Dalam';
         if (strVal === '3' || strVal === 'paru-paru' || strVal === 'paru' || strVal === 'penyakit paru-paru' || strVal === 'lung disease') return 'Paru-paru';
         
         // Fallback dari mainPrediction disease_id jika ada
         const mainPredId = String(mainPrediction.disease_id || '').trim();
+        if (mainPredId === '0') return 'Normal';
         if (mainPredId === '1') return 'Jantung';
         if (mainPredId === '2') return 'Penyakit Dalam';
         if (mainPredId === '3') return 'Paru-paru';

@@ -4,8 +4,8 @@ import logoFull from '../assets/logo-full.png';
 import userAvatar from '../assets/user-avatar.png';
 import { useLanguage } from '../context/LanguageContext.jsx';
 import { fetchWithAuth } from '../utils/api.js';
-import { useFormatCheckUpDate } from '../utils/FormatCheckUpDate.jsx';
-import { useTranslateCheckUp } from '../utils/TranslateCheckUp.jsx';
+import { useFormatCheckUpDate } from '../utils/FormatCheckUpDate.js';
+import { useTranslateCheckUp } from '../utils/TranslateCheckUp.js';
 
 export default function DashboardLayout() {
   const username = localStorage.getItem('userName') || 'Jati Sri Pamungkas';
@@ -58,19 +58,25 @@ export default function DashboardLayout() {
           const result = await response.json();
           // Map data ke format yang diharapkan UI frontend
           const mapped = result.data.map((item) => {
-            const mainPrediction = item.predictions && item.predictions.length > 0
+            const maxProb = item.predictions && item.predictions.length > 0
+              ? Math.max(...item.predictions.map(p => p.probability))
+              : 0;
+
+            const mainPrediction = maxProb >= 0.3
               ? item.predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current)
-              : { disease_name: 'Penyakit Dalam', probability: 0, risk: 'Low' };
+              : { disease_name: 'Normal', probability: maxProb, risk: 'Low', disease_id: 0 };
 
             const mapClassIdToName = (classVal) => {
-              if (!classVal) return 'Penyakit Dalam';
+              if (classVal === undefined || classVal === null) return 'Penyakit Dalam';
               const strVal = String(classVal).trim().toLowerCase();
+              if (strVal === '0' || strVal === 'normal' || strVal === 'normal / sehat') return 'Normal';
               if (strVal === '1' || strVal === 'jantung' || strVal === 'penyakit jantung' || strVal === 'heart disease') return 'Jantung';
               if (strVal === '2' || strVal === 'penyakit dalam' || strVal === 'internal disease' || strVal === 'internal medicine') return 'Penyakit Dalam';
               if (strVal === '3' || strVal === 'paru-paru' || strVal === 'paru' || strVal === 'penyakit paru-paru' || strVal === 'lung disease') return 'Paru-paru';
               
               // Fallback jika berupa mainPrediction.disease_id
               const mainPredId = String(mainPrediction.disease_id || '').trim();
+              if (mainPredId === '0') return 'Normal';
               if (mainPredId === '1') return 'Jantung';
               if (mainPredId === '2') return 'Penyakit Dalam';
               if (mainPredId === '3') return 'Paru-paru';

@@ -11,6 +11,7 @@ const pool = new Pool({
   database: process.env.PGDATABASE,
   password: process.env.PGPASSWORD,
   port: parseInt(process.env.PGPORT || '5432'),
+  ssl: process.env.PGHOST !== 'localhost' ? { rejectUnauthorized: false } : false,
 });
 
 export default pool;

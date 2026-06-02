@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import LandingPage from './pages/landing-page/LandingPage';
-import ScrollToTop from './utils/ScrollToTop';
+import ScrollToTop from './utils/ScrollToTop.js';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/dashboard/Dashboard';
 import CheckUp from './pages/dashboard/CheckUp';
