@@ -169,22 +169,26 @@ export async function createPrediction(req, res) {
       });
     }
 
-    // Call Gemini API to generate automated summary and lifestyle suggestions
-    const aiResult = await generateSummaryAndSuggestions(validatedData, result);
-
-    // Save AI summary and suggestion to the database
-    await insertSummary(checkUpId, aiResult.summary);
-    await insertSuggestion(checkUpId, aiResult.suggestion);
+    // Call Gemini API in the background to avoid blocking the HTTP response
+    generateSummaryAndSuggestions(validatedData, result)
+      .then(async (aiResult) => {
+        await insertSummary(checkUpId, aiResult.summary);
+        await insertSuggestion(checkUpId, aiResult.suggestion);
+        console.log(`[Gemini AI] Background AI summary and suggestion saved successfully for checkUpId: ${checkUpId}`);
+      })
+      .catch((err) => {
+        console.error(`[Gemini AI] Background AI generation failed for checkUpId: ${checkUpId}:`, err.message);
+      });
 
     res.status(201).json({
-      message: 'Check-up, predictions, and AI recommendations successfully saved to database',
+      message: 'Check-up and predictions successfully saved to database. AI recommendations are being generated in the background.',
       data: {
         check_up_id: checkUpId,
         overall_status: result.overall_status,
         predicted_class: result.predicted_class,
         predictions: savedPredictions,
-        summary: aiResult.summary,
-        suggestion: aiResult.suggestion,
+        summary: null,
+        suggestion: null,
         created_at: checkUpResult.rows[0].created_at,
       },
     });

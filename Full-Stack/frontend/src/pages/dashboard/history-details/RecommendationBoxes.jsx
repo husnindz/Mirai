@@ -82,13 +82,26 @@ export default function RecommendationBoxes({ selectedHistoryItem, translateAbno
     );
   };
 
-  // Modern and high-end styling variants based on isAi
-  const summaryCardStyle = isAi
-    ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F4EFFF] to-[#FAF5FF] border-2 border-purple-300/60 rounded-[20px] p-6 shadow-[0_8px_30px_rgba(168,85,247,0.08)] md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-[0_12px_35px_rgba(168,85,247,0.16)] hover:-translate-y-0.5'
+  const isGenerating = selectedHistoryItem?.isGenerating;
+  const finalIsAi = isAi || isGenerating;
+
+  // Render a gorgeous shimmering skeleton loading effect for AI processing
+  const renderSkeletonLoader = () => (
+    <div className="space-y-3 animate-pulse py-2 select-none">
+      <div className="h-4 bg-purple-200/60 rounded-full w-full"></div>
+      <div className="h-4 bg-purple-200/60 rounded-full w-11/12"></div>
+      <div className="h-4 bg-purple-200/60 rounded-full w-10/12"></div>
+      <div className="h-4 bg-purple-200/60 rounded-full w-7/12"></div>
+    </div>
+  );
+
+  // Modern and high-end styling variants based on isAi / isGenerating
+  const summaryCardStyle = finalIsAi
+    ? 'bg-linear-to-br from-[#FAF5FF] via-[#F4EFFF] to-[#FAF5FF] border-2 border-purple-300/60 rounded-[20px] p-6 shadow-[0_8px_30px_rgba(168,85,247,0.08)] md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-[0_12px_35px_rgba(168,85,247,0.16)] hover:-translate-y-0.5'
     : 'bg-[#EDFBFF] border border-[#AFAFAF]/30 rounded-[20px] p-6 shadow-lg md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5';
 
-  const suggestionCardStyle = isAi
-    ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F0FDF4]/30 to-[#FAF5FF] border-2 border-purple-300/60 rounded-[20px] p-6 shadow-[0_8px_30px_rgba(168,85,247,0.08)] md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-[0_12px_35px_rgba(168,85,247,0.16)] hover:-translate-y-0.5'
+  const suggestionCardStyle = finalIsAi
+    ? 'bg-linear-to-br from-[#FAF5FF] via-[#F0FDF4]/30 to-[#FAF5FF] border-2 border-purple-300/60 rounded-[20px] p-6 shadow-[0_8px_30px_rgba(168,85,247,0.08)] md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-[0_12px_35px_rgba(168,85,247,0.16)] hover:-translate-y-0.5'
     : 'bg-[#EDFBFF] border-2 border-brand-accent rounded-[20px] p-6 shadow-lg md:min-h-[220px] h-auto pb-6 text-left flex flex-col justify-start transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5';
 
   return (
@@ -97,11 +110,15 @@ export default function RecommendationBoxes({ selectedHistoryItem, translateAbno
       <div className={summaryCardStyle}>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h4
-            className={`font-montserrat font-bold text-[22px] flex items-center gap-2 ${isAi ? 'text-purple-950' : 'text-[#262626]'}`}
+            className={`font-montserrat font-bold text-[22px] flex items-center gap-2 ${finalIsAi ? 'text-purple-950' : 'text-[#262626]'}`}
           >
             ✨ {language === 'id' ? 'Ringkasan Asisten AI' : 'AI Assistant Summary'}
           </h4>
-          {isAi ? (
+          {isGenerating ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-sm uppercase tracking-wider animate-pulse select-none">
+              🤖 AI GENERATING...
+            </span>
+          ) : isAi ? (
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-sm uppercase tracking-wider animate-pulse select-none">
               AI ACTIVE
             </span>
@@ -112,7 +129,9 @@ export default function RecommendationBoxes({ selectedHistoryItem, translateAbno
           )}
         </div>
         <div className="font-montserrat font-medium flex-1 overflow-y-auto max-h-[300px] pr-2">
-          {selectedHistoryItem.summary ? (
+          {isGenerating ? (
+            renderSkeletonLoader()
+          ) : selectedHistoryItem.summary ? (
             renderFormattedText(selectedHistoryItem.summary, isAi)
           ) : (
             <p
@@ -128,11 +147,15 @@ export default function RecommendationBoxes({ selectedHistoryItem, translateAbno
       <div className={suggestionCardStyle}>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h4
-            className={`font-montserrat font-bold text-[22px] flex items-center gap-2 ${isAi ? 'text-purple-950' : 'text-brand-primary'}`}
+            className={`font-montserrat font-bold text-[22px] flex items-center gap-2 ${finalIsAi ? 'text-purple-950' : 'text-brand-primary'}`}
           >
             📋 {language === 'id' ? 'Rekomendasi Tindak Lanjut' : 'Follow-Up Recommendations'}
           </h4>
-          {isAi ? (
+          {isGenerating ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-sm uppercase tracking-wider animate-pulse select-none">
+              🤖 AI GENERATING...
+            </span>
+          ) : isAi ? (
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-sm uppercase tracking-wider animate-pulse select-none">
               AI ACTIVE
             </span>
@@ -143,7 +166,9 @@ export default function RecommendationBoxes({ selectedHistoryItem, translateAbno
           )}
         </div>
         <div className="font-montserrat font-medium flex-1 overflow-y-auto max-h-[300px] pr-2">
-          {selectedHistoryItem.suggestion ? (
+          {isGenerating ? (
+            renderSkeletonLoader()
+          ) : selectedHistoryItem.suggestion ? (
             renderFormattedText(selectedHistoryItem.suggestion, isAi)
           ) : (
             <div

@@ -114,6 +114,6 @@ export async function fetchWithAuth(endpoint, options = {}) {
 function handleLogout() {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  // Arahkan pengguna ke halaman utama/login
-  window.location.href = '/';
+  // Arahkan pengguna ke halaman login
+  window.location.href = '/login';
 }

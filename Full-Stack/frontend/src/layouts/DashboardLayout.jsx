@@ -160,7 +160,7 @@ export default function DashboardLayout() {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
-      navigate('/');
+      navigate('/login');
     }
   };
 

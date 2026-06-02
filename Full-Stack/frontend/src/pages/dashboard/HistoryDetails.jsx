@@ -51,9 +51,13 @@ export default function HistoryDetails() {
   };
 
   useEffect(() => {
-    async function loadDetail() {
+    let active = true;
+    let pollInterval = null;
+    let pollCount = 0;
+
+    async function loadDetail(isPolling = false) {
       try {
-        setLoading(true);
+        if (!isPolling) setLoading(true);
         const response = await fetchWithAuth(`/predictions/history/${id}`);
         if (!response.ok) {
           throw new Error('Gagal mengambil detail riwayat');
@@ -201,34 +205,62 @@ export default function HistoryDetails() {
         const cleanSummary = rawSummary.replace(/^\[AI\]\s*|^\[TEMPLATE\]\s*/, '');
         const cleanSuggestion = (raw.suggestion || '').replace(/^\[AI\]\s*|^\[TEMPLATE\]\s*/, '');
 
-        setSelectedHistoryItem({
-          id: raw.check_up_id,
-          category: categoryText,
-          date: parseAndFormatDate(raw.created_at),
-          risk: riskText,
-          riskColor:
-            mainPrediction.risk === 'High'
-              ? 'bg-[#EB5050] text-[#530505]'
-              : mainPrediction.risk === 'Medium'
-                ? 'bg-[#F2C039] text-[#836512]'
-                : 'bg-[#17ADB4] text-[#084F63]',
-          score: Math.round(mainPrediction.probability * 100),
-          parameters,
-          abnormalText,
-          summary: cleanSummary,
-          suggestion: cleanSuggestion,
-          isAi: isAi,
-          scores,
-        });
+        // We are generating if there is no rawSummary yet, and we haven't reached the max poll count (15 polls = 30 seconds max)
+        const isGenerating = !rawSummary && pollCount < 15;
+
+        if (active) {
+          setSelectedHistoryItem({
+            id: raw.check_up_id,
+            category: categoryText,
+            date: parseAndFormatDate(raw.created_at),
+            risk: riskText,
+            riskColor:
+              mainPrediction.risk === 'High'
+                ? 'bg-[#EB5050] text-[#530505]'
+                : mainPrediction.risk === 'Medium'
+                  ? 'bg-[#F2C039] text-[#836512]'
+                  : 'bg-[#17ADB4] text-[#084F63]',
+            score: Math.round(mainPrediction.probability * 100),
+            parameters,
+            abnormalText,
+            summary: cleanSummary,
+            suggestion: cleanSuggestion,
+            isAi: isAi,
+            isGenerating: isGenerating,
+            scores,
+          });
+
+          // Setup background polling if it is still generating
+          if (isGenerating) {
+            pollCount++;
+            if (!pollInterval) {
+              pollInterval = setInterval(() => {
+                loadDetail(true);
+              }, 2000);
+            }
+          } else {
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+          }
+        }
       } catch (err) {
         console.error(err);
-        setError(err.message);
+        if (active) setError(err.message);
       } finally {
-        setLoading(false);
+        if (active && !isPolling) setLoading(false);
       }
     }
 
     loadDetail();
+
+    return () => {
+      active = false;
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
   }, [id]);
 
   if (loading) {
