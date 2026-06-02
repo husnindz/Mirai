@@ -99,13 +99,47 @@ export const findPredictionHistoryById = (checkUpId, userId) => {
       d.disease_name,
       dp.probability,
       dp.risk,
-      dp.created_at AS prediction_created_at
+      dp.created_at AS prediction_created_at,
+      s.summary,
+      sg.suggestion
     FROM check_up c
     LEFT JOIN disease_predictions dp ON c.check_up_id = dp.check_up_id
     LEFT JOIN diseases d ON dp.disease_id = d.disease_id
+    LEFT JOIN summaries s ON c.check_up_id = s.check_up_id
+    LEFT JOIN suggestions sg ON c.check_up_id = sg.check_up_id
     WHERE c.check_up_id = $1 AND c.user_id = $2
     ORDER BY dp.disease_id ASC
   `;
 
   return pool.query(SQLQuery, [checkUpId, userId]);
+};
+
+/**
+ * Inserts an AI summary for a check-up record.
+ * @param {number} checkUpId - Reference ID to the check_up record.
+ * @param {string} summary - AI generated summary text.
+ * @returns {Promise} - Postgres query result.
+ */
+export const insertSummary = (checkUpId, summary) => {
+  const SQLQuery = `
+    INSERT INTO summaries (check_up_id, summary)
+    VALUES ($1, $2)
+    RETURNING summary_id, check_up_id, summary, created_at
+  `;
+  return pool.query(SQLQuery, [checkUpId, summary]);
+};
+
+/**
+ * Inserts AI suggestions for a check-up record.
+ * @param {number} checkUpId - Reference ID to the check_up record.
+ * @param {string} suggestion - AI generated suggestion text.
+ * @returns {Promise} - Postgres query result.
+ */
+export const insertSuggestion = (checkUpId, suggestion) => {
+  const SQLQuery = `
+    INSERT INTO suggestions (check_up_id, suggestion)
+    VALUES ($1, $2)
+    RETURNING suggestion_id, check_up_id, suggestion, created_at
+  `;
+  return pool.query(SQLQuery, [checkUpId, suggestion]);
 };

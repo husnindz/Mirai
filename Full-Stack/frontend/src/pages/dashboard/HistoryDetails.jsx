@@ -210,6 +210,8 @@ export default function HistoryDetails() {
           score: Math.round(mainPrediction.probability * 100),
           parameters,
           abnormalText,
+          summary: raw.summary,
+          suggestion: raw.suggestion,
           scores,
         });
       } catch (err) {
@@ -258,10 +260,10 @@ export default function HistoryDetails() {
         translateStatus={translateStatus}
       />
 
-      {/* <RecommendationBoxes
+      <RecommendationBoxes
         selectedHistoryItem={selectedHistoryItem}
         translateAbnormalText={translateAbnormalText}
-      /> */}
+      />
 
       <Disclaimer />
     </div>

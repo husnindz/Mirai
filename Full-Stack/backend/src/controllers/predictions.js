@@ -3,7 +3,10 @@ import {
   insertDiseasePrediction,
   findPredictionHistoryByUserId,
   findPredictionHistoryById,
+  insertSummary,
+  insertSuggestion,
 } from '../models/predictions.js';
+import { generateSummaryAndSuggestions } from '../utils/gemini.js';
 
 // Configuration URL for the FastAPI Prediction Service
 const MODEL_SERVICE_URL = process.env.MODEL_SERVICE_URL || 'http://localhost:8000';
@@ -166,13 +169,22 @@ export async function createPrediction(req, res) {
       });
     }
 
+    // Call Gemini API to generate automated summary and lifestyle suggestions
+    const aiResult = await generateSummaryAndSuggestions(validatedData, result);
+
+    // Save AI summary and suggestion to the database
+    await insertSummary(checkUpId, aiResult.summary);
+    await insertSuggestion(checkUpId, aiResult.suggestion);
+
     res.status(201).json({
-      message: 'Check-up and predictions successfully saved to database',
+      message: 'Check-up, predictions, and AI recommendations successfully saved to database',
       data: {
         check_up_id: checkUpId,
         overall_status: result.overall_status,
         predicted_class: result.predicted_class,
         predictions: savedPredictions,
+        summary: aiResult.summary,
+        suggestion: aiResult.suggestion,
         created_at: checkUpResult.rows[0].created_at,
       },
     });
@@ -278,6 +290,8 @@ export async function getHistoryById(req, res) {
       mcv: parseFloat(rows[0].mcv),
       urea: parseFloat(rows[0].ureum),
       wbc: parseFloat(rows[0].wbc),
+      summary: rows[0].summary || null,
+      suggestion: rows[0].suggestion || null,
       created_at: rows[0].check_up_created_at,
       predictions: [],
     };

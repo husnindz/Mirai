@@ -23,7 +23,8 @@
     "express": "^5.2.1",
     "joi": "^18.2.1",
     "jsonwebtoken": "^9.0.3",
-    "node-pg-migrate": "^7.9.1"
+    "node-pg-migrate": "^7.9.1",
+    "@google/generative-ai": "^0.21.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
