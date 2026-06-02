@@ -61,7 +61,7 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 
 | 👩‍💻 Nama | 🆔 Student ID | 🎓 Learning Path | Kontribusi / Task |
 |:----------|:----------|:----------|:----------|
-| **[Husni Nur Dzaki]** | CDCC183D6Y0760 | Machine Learning | Data preprocessing, data integration, feature engineering, feature selection, exploratory data analysis (EDA), medical dataset construction, model evaluation, dan dokumentasi machine learning. |
+| **[Husni Nur Dzaki]** | CDCC183D6Y0760 | Machine Learning | Data preprocessing, data integration, feature engineering, feature selection, medical dataset construction, model evaluation, dan dokumentasi machine learning. |
 | **[Nama Tim]** | [ID] | Machine Learning | Diisi Divisi AI |
 | **[Nama Tim]** | [ID] | Back-End | Diisi Divisi Back-End |
 | **[Nama Tim]** | [ID] | Back-End | Diisi Divisi Back-End |
@@ -101,7 +101,6 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 | **NumPy** | Komputasi numerik dan pengolahan array. |
 | **Scikit-Learn** | Preprocessing dan feature engineering. |
 | **Matplotlib** | Visualisasi data dan analisis hasil. |
-| **Seaborn** | Exploratory Data Analysis (EDA). |
 | **Streamlit** | Dashboard interaktif untuk visualisasi data. |
 
 ## 📈 Hasil yang Diharapkan
