@@ -196,6 +196,11 @@ export default function HistoryDetails() {
           }
         });
 
+        const rawSummary = raw.summary || '';
+        const isAi = rawSummary.startsWith('[AI]');
+        const cleanSummary = rawSummary.replace(/^\[AI\]\s*|^\[TEMPLATE\]\s*/, '');
+        const cleanSuggestion = (raw.suggestion || '').replace(/^\[AI\]\s*|^\[TEMPLATE\]\s*/, '');
+
         setSelectedHistoryItem({
           id: raw.check_up_id,
           category: categoryText,
@@ -210,8 +215,9 @@ export default function HistoryDetails() {
           score: Math.round(mainPrediction.probability * 100),
           parameters,
           abnormalText,
-          summary: raw.summary,
-          suggestion: raw.suggestion,
+          summary: cleanSummary,
+          suggestion: cleanSuggestion,
+          isAi: isAi,
           scores,
         });
       } catch (err) {

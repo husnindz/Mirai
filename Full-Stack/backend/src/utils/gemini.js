@@ -16,8 +16,8 @@ export async function generateSummaryAndSuggestions(labData, predictionResult) {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Using the optimized, fast, and free-tier-friendly gemini-1.5-flash model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Using the optimized, fast, and free-tier-friendly gemini-2.5-flash model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Format gender for prompt
     const genderText = labData.gender === 1 ? "Laki-laki" : "Perempuan";
@@ -74,8 +74,8 @@ Wajib kembalikan response dalam bentuk JSON valid dengan skema:
     const parsedResult = JSON.parse(responseText);
 
     return {
-      summary: parsedResult.summary || "",
-      suggestion: parsedResult.suggestion || ""
+      summary: parsedResult.summary ? `[AI] ${parsedResult.summary}` : "",
+      suggestion: parsedResult.suggestion ? `[AI] ${parsedResult.suggestion}` : ""
     };
 
   } catch (error) {
@@ -90,31 +90,33 @@ Wajib kembalikan response dalam bentuk JSON valid dengan skema:
  */
 function getFallbackSummary(predictionResult) {
   const status = predictionResult.overall_status;
+  let rawResult = { summary: "", suggestion: "" };
   
   if (status === "Normal") {
-    return {
+    rawResult = {
       summary: "Secara keseluruhan, hasil pemeriksaan laboratorium Anda menunjukkan kondisi yang baik dan berada dalam rentang normal. AI kami mendeteksi tingkat risiko penyakit yang sangat rendah pada organ Jantung, Paru-paru, dan Penyakit Dalam lainnya.",
       suggestion: "* **Pola Makan**: Pertahankan diet sehat seimbang tinggi serat, sayuran, dan protein rendah lemak.\n* **Aktivitas**: Lakukan olahraga kardio sedang seperti jalan kaki atau bersepeda 150 menit per minggu.\n* **Pemeriksaan berkala**: Lakukan pemeriksaan laboratorium rutin minimal 1 tahun sekali untuk pencegahan dini."
     };
-  }
-
-  if (status === "Jantung") {
-    return {
+  } else if (status === "Jantung") {
+    rawResult = {
       summary: "AI mendeteksi adanya indikasi peningkatan risiko terkait kondisi Jantung Anda berdasarkan parameter profil laboratorium Anda. Beberapa nilai lab terindikasi memerlukan perhatian medis lebih lanjut.",
       suggestion: "* **Tindakan Medis**: Sangat disarankan untuk berkonsultasi dengan Dokter Spesialis Jantung (Kardiolog) untuk pemeriksaan elektrokardiogram (EKG) atau echocardiography.\n* **Pola Makan**: Batasi asupan lemak jenuh, gorengan, bersantan, garam berlebih, dan makanan olahan.\n* **Gaya Hidup**: Hindari stres berlebih, pastikan istirahat cukup, dan hindari asap rokok/aktivitas fisik yang terlalu berat secara mendadak."
     };
-  }
-
-  if (status === "Paru-paru") {
-    return {
+  } else if (status === "Paru-paru") {
+    rawResult = {
       summary: "Hasil analisis laboratorium dan prediksi AI menunjukkan adanya potensi risiko kesehatan yang berkaitan dengan sistem pernapasan atau Paru-paru Anda. Diperlukan evaluasi klinis lanjutan.",
       suggestion: "* **Tindakan Medis**: Konsultasikan dengan Dokter Spesialis Paru (Pulmonolog) untuk melakukan tes spirometri atau rontgen dada (X-Ray).\n* **Gaya Hidup**: Hindari paparan debu, polusi udara, zat kimia berbahaya, dan asap rokok secara mutlak.\n* **Aktivitas**: Lakukan latihan pernapasan ringan secara rutin untuk mengoptimalkan kapasitas paru-paru Anda."
     };
+  } else {
+    // Fallback for "Penyakit Dalam" or general risks
+    rawResult = {
+      summary: "Berdasarkan data laboratorium Anda, AI kami mengidentifikasi adanya potensi gangguan kesehatan pada kategori Penyakit Dalam (seperti gangguan fungsi hati, ginjal, atau diabetes) yang perlu mendapat evaluasi medis profesional.",
+      suggestion: "* **Tindakan Medis**: Jadwalkan konsultasi dengan Dokter Spesialis Penyakit Dalam (Sp.PD) untuk mendiskusikan hasil lab ginjal/ureum/gula darah Anda secara mendalam.\n* **Pola Makan**: Kurangi makanan manis/tinggi gula sederhana jika kadar gula darah tinggi, dan minum air putih minimal 2 liter per hari untuk kesehatan ginjal.\n* **Monitoring**: Lakukan pemantauan mandiri terhadap tekanan darah dan kadar gula darah secara teratur."
+    };
   }
 
-  // Fallback for "Penyakit Dalam" or general risks
   return {
-    summary: "Berdasarkan data laboratorium Anda, AI kami mengidentifikasi adanya potensi gangguan kesehatan pada kategori Penyakit Dalam (seperti gangguan fungsi hati, ginjal, atau diabetes) yang perlu mendapat evaluasi medis profesional.",
-    suggestion: "* **Tindakan Medis**: Jadwalkan konsultasi dengan Dokter Spesialis Penyakit Dalam (Sp.PD) untuk mendiskusikan hasil lab ginjal/ureum/gula darah Anda secara mendalam.\n* **Pola Makan**: Kurangi makanan manis/tinggi gula sederhana jika kadar gula darah tinggi, dan minum air putih minimal 2 liter per hari untuk kesehatan ginjal.\n* **Monitoring**: Lakukan pemantauan mandiri terhadap tekanan darah dan kadar gula darah secara teratur."
+    summary: `[TEMPLATE] ${rawResult.summary}`,
+    suggestion: `[TEMPLATE] ${rawResult.suggestion}`
   };
 }
