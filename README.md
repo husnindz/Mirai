@@ -109,6 +109,7 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 | **Scikit-Learn**    | Preprocessing dan feature engineering.              |
 | **Matplotlib**      | Visualisasi data dan analisis hasil.                |
 | **Streamlit**       | Dashboard interaktif untuk visualisasi data.        |
+| **Seaborn**         | Exploratory Data Analysis (EDA).                    |
 
 ## 📈 Hasil yang Diharapkan
 
