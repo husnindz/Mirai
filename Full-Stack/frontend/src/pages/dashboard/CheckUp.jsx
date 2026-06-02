@@ -31,6 +31,8 @@ export default function CheckUp() {
   const [ureum, setUreum] = useState('');
   const [wbc, setWbc] = useState('');
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleNextStep = () => {
     if (checkUpStep < 4) setCheckUpStep(checkUpStep + 1);
   };
@@ -52,6 +54,9 @@ export default function CheckUp() {
   };
 
   const handleFinishCheckUp = () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     const cholVal = parseFloat(cholesterol) || 150;
     const creatinineVal = parseFloat(creatinine) || 0.9;
     const fbsVal = parseFloat(fbs) || 90;
@@ -155,6 +160,7 @@ export default function CheckUp() {
         scores
       };
 
+      setIsSubmitting(false);
       onFinish(newRecord);
 
       // Reset form states
@@ -171,6 +177,7 @@ export default function CheckUp() {
       setWbc('');
     })
     .catch((err) => {
+      setIsSubmitting(false);
       alert('Error memproses check-up: ' + err.message);
     });
   };
@@ -185,6 +192,7 @@ export default function CheckUp() {
         handleNextStep={handleNextStep}
         handleFinishCheckUp={handleFinishCheckUp}
         isStepValid={isStepValid}
+        isSubmitting={isSubmitting}
         cholesterol={cholesterol}
         setCholesterol={setCholesterol}
         creatinine={creatinine}

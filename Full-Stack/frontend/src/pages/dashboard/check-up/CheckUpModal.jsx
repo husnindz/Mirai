@@ -35,6 +35,7 @@ export default function CheckUpModal({
   setUreum,
   wbc,
   setWbc,
+  isSubmitting,
 }) {
   const { language, t } = useLanguage();
 
@@ -47,7 +48,8 @@ export default function CheckUpModal({
       >
         <button
           onClick={handleCloseCheckUp}
-          className="absolute top-4 right-4 w-[50px] h-[50px] bg-[#EB5050] text-[#530505] font-poppins font-medium text-[24px] rounded-[5px] flex items-center justify-center hover:bg-[#d63f3f] active:scale-95 transition-all shadow-md cursor-pointer z-50"
+          disabled={isSubmitting}
+          className="absolute top-4 right-4 w-[50px] h-[50px] bg-[#EB5050] text-[#530505] font-poppins font-medium text-[24px] rounded-[5px] flex items-center justify-center hover:bg-[#d63f3f] active:scale-95 transition-all shadow-md cursor-pointer z-50 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
           aria-label="Close modal"
         >
           X
@@ -107,7 +109,8 @@ export default function CheckUpModal({
             {checkUpStep > 1 ? (
               <button
                 onClick={handlePrevStep}
-                className="w-[120px] h-[44px] bg-transparent border border-brand-primary text-brand-primary font-poppins font-medium text-[16px] rounded-[5px] flex items-center justify-center gap-2 hover:bg-brand-primary/5 active:scale-95 transition-all cursor-pointer"
+                disabled={isSubmitting}
+                className="w-[120px] h-[44px] bg-transparent border border-brand-primary text-brand-primary font-poppins font-medium text-[16px] rounded-[5px] flex items-center justify-center gap-2 hover:bg-brand-primary/5 active:scale-95 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
               >
                 <svg
                   className="w-4 h-4 transform rotate-180"
@@ -147,10 +150,20 @@ export default function CheckUpModal({
             ) : (
               <button
                 onClick={handleFinishCheckUp}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || isSubmitting}
                 className="w-[120px] h-[44px] bg-brand-primary text-brand-accent font-poppins font-medium text-[16px] rounded-[5px] flex items-center justify-center hover:bg-[#0f4859] active:scale-95 transition-all cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
               >
-                {t.finishBtn || 'Finish'}
+                {isSubmitting ? (
+                  <span className="flex items-center gap-1.5 justify-center">
+                    <svg className="animate-spin h-4.5 w-4.5 text-brand-accent" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {language === 'id' ? 'Proses...' : 'Processing...'}
+                  </span>
+                ) : (
+                  t.finishBtn || 'Finish'
+                )}
               </button>
             )}
           </div>
