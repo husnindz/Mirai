@@ -38,30 +38,30 @@ export default function Login({ initialTab = 'login' }) {
         return;
       }
 
-      fetch('http://localhost:3000/auth/login', {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       })
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || 'Login failed!');
-        }
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        localStorage.setItem('userEmail', data.data.email);
-        localStorage.setItem('userName', data.data.name || 'Jati Sri Pamungkas');
-        setSuccess(t.successLogin);
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1000);
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
+        .then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.message || 'Login failed!');
+          }
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          localStorage.setItem('userEmail', data.data.email);
+          localStorage.setItem('userName', data.data.name || 'Jati Sri Pamungkas');
+          setSuccess(t.successLogin);
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1000);
+        })
+        .catch((err) => {
+          setError(err.message);
+        });
     } else {
       if (!fullname || !email || !password || !confirmPassword || !age || !gender) {
         setError(t.errorAllRequired || 'All fields are required');
@@ -72,33 +72,33 @@ export default function Login({ initialTab = 'login' }) {
         return;
       }
 
-      fetch('http://localhost:3000/auth/register', {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
           password,
           name: fullname,
           age: parseInt(age),
-          gender: gender
+          gender: gender,
+        }),
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.message || 'Registration failed!');
+          }
+          setSuccess(t.successRegister);
+          setTimeout(() => {
+            setActiveTab('login');
+            navigate('/login');
+          }, 1000);
         })
-      })
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || 'Registration failed!');
-        }
-        setSuccess(t.successRegister);
-        setTimeout(() => {
-          setActiveTab('login');
-          navigate('/login');
-        }, 1000);
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
+        .catch((err) => {
+          setError(err.message);
+        });
     }
   };
 

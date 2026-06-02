@@ -1,0 +1,19 @@
+# Sensitive keys
+*.pem
+*.key
+*.pub
+
+# Local environment configs
+.env
+.env.*
+
+# Dependency and environment folders
+node_modules/
+__pycache__/
+venv/
+.venv/
+keras_unzipped/
+dist/
+build/
+.vscode/
+.idea/

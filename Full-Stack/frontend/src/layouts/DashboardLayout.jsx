@@ -145,7 +145,7 @@ export default function DashboardLayout() {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
-        await fetch('http://localhost:3000/auth/logout', {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/auth/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
