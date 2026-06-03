@@ -62,7 +62,7 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 | **Tamariska Pusparani**         | CDCC008D6X0992 | Data Science     | lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.                                                          |
 | **Jati Sri Pamungkas**          | CFCC183D6Y2824 | Full-Stack       | Merancang & mengimplementasikan antarmuka pengguna (UI/UX) website, mendesain skema arsitektur database, serta melakukan integrasi sistem backend dengan model AI secara end-to-end. |
 | **Arundaya Xenia Naurachmawan** | CFCC183D6X1944 | Full-Stack       | lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.                                                          |
-| **Muhammad Alif Indrastata**    | CACC183D6Y2083 | AI               | lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.                                                          |
+| **Muhammad Alif Indrastata**    | CACC183D6Y2083 | AI Engineer      | Desain model klasifikasi multi-kelas, pemrograman TensorFlow tingkat lanjut, kustomisasi pipeline pelatihan, optimasi performa otomatis via Optuna, analisis XAI (Explainable AI) menggunakan SHAP..                                                          |
 
 ---
 
