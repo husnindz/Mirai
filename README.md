@@ -21,8 +21,6 @@ Sistem ini tidak dimaksudkan sebagai alat diagnosis medis, melainkan sebagai ala
 **Demo Video:**  
 [Diisi Divisi Fullstack]
 
-**Live Demo:**  
-[Diisi Divisi Fullstack]
 
 ---
 
@@ -94,21 +92,30 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 
 ## 🧩 AI Engineer
 
-| Teknologi / Library      | Fungsi                   |
-| :----------------------- | :----------------------- |
-| [Diisi Divisi Front-End] | [Diisi Divisi Front-End] |
+### 🧩 Artificial Intelligence
+
+| Teknologi / Library | Fungsi |
+| :------------------ | :----- |
+| **TensorFlow & Keras** | Framework utama untuk membangun, melatih, dan melakukan inferensi model Deep Learning. |
+| **Optuna**             | Optimasi hyperparameter untuk meningkatkan performa model secara otomatis. |
+| **SHAP**               | Interpretabilitas model dan analisis kontribusi fitur terhadap prediksi. |
+| **Scikit-Learn**       | Data splitting, scaling, evaluasi model, dan perhitungan class weight. |
+| **Imbalanced-Learn (SMOTE)** | Menangani ketidakseimbangan kelas melalui oversampling sintetis. |
+| **TensorBoard**          | Monitoring proses training dan visualisasi metrik model. |
+| **Joblib**             | Menyimpan dan memuat model pendukung seperti scaler untuk deployment. |
 
 ---
 
 ## 🧩 Data Science
 
-| Teknologi / Library | Fungsi                                              |
-| :------------------ | :-------------------------------------------------- |
-| **Pandas**          | Data cleaning, transformasi, dan integrasi dataset. |
-| **NumPy**           | Komputasi numerik dan pengolahan array.             |
-| **Scikit-Learn**    | Preprocessing dan feature engineering.              |
-| **Matplotlib**      | Visualisasi data dan analisis hasil.                |
-| **Streamlit**       | Dashboard interaktif untuk visualisasi data.        |
+| Teknologi / Library | Fungsi                                                                                              |
+| :------------------ | :-------------------------------------------------------------------------------------------------- |
+| **Pandas**          | Data cleaning, transformasi, dan integrasi dataset.                                                 |
+| **NumPy**           | Komputasi numerik dan pengolahan array.                                                             |
+| **Scikit-Learn**    | Library untuk preprocessing data, encoding, feature engineering, dan evaluasi dataset.              |
+| **Matplotlib**      | Library visualisasi data untuk analisis dan pelaporan hasil eksplorasi data.                        |
+| **Streamlit**       | Framework untuk membangun dashboard interaktif dan menampilkan hasil analisis data.                 |
+| **Seaborn**         | Library untuk Exploratory Data Analysis (EDA) dan visualisasi statistik.                            |
 
 ## 📈 Hasil yang Diharapkan
 
