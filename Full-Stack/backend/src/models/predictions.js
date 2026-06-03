@@ -143,3 +143,19 @@ export const insertSuggestion = (checkUpId, suggestion) => {
   `;
   return pool.query(SQLQuery, [checkUpId, suggestion]);
 };
+
+/**
+ * Deletes a check-up record by ID for a specific user.
+ * @param {number} checkUpId - ID of the check-up.
+ * @param {number} userId - ID of the user.
+ * @returns {Promise} - Postgres query result.
+ */
+export const deleteCheckUpById = (checkUpId, userId) => {
+  const SQLQuery = `
+    DELETE FROM check_up
+    WHERE check_up_id = $1 AND user_id = $2
+    RETURNING check_up_id
+  `;
+  return pool.query(SQLQuery, [checkUpId, userId]);
+};
+

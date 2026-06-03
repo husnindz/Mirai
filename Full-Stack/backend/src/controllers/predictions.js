@@ -5,6 +5,7 @@ import {
   findPredictionHistoryById,
   insertSummary,
   insertSuggestion,
+  deleteCheckUpById,
 } from '../models/predictions.js';
 import { generateSummaryAndSuggestions } from '../utils/gemini.js';
 
@@ -326,3 +327,44 @@ export async function getHistoryById(req, res) {
 
 // Alias for flexibility
 export const getPredictionHistoryById = getHistoryById;
+
+/**
+ * DELETE /predictions/history/:id
+ * Deletes a check-up and prediction history by ID for the authenticated user.
+ */
+export async function deleteHistoryById(req, res) {
+  try {
+    const userId = req.user.user_id;
+    if (!userId) {
+      return res.status(401).json({
+        message: 'Unauthorized. User ID is missing!',
+      });
+    }
+
+    const checkUpId = req.params.id;
+    if (!checkUpId) {
+      return res.status(400).json({
+        message: 'Check-up ID is required',
+      });
+    }
+
+    const result = await deleteCheckUpById(checkUpId, userId);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: 'Prediction history not found or unauthorized to delete',
+      });
+    }
+
+    res.status(200).json({
+      message: 'Success to DELETE prediction history!',
+      data: { check_up_id: result.rows[0].check_up_id },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error deleting prediction history',
+      error: error.message,
+    });
+  }
+}
+

@@ -5,6 +5,7 @@ import HistoryHeader from './history/HistoryHeader';
 import HistoryTable from './history/HistoryTable';
 import HistoryPagination from './history/HistoryPagination';
 import DeleteConfirmModal from './history/DeleteConfirmModal';
+import { fetchWithAuth } from '../../utils/api.js';
 
 export default function History() {
   const { historyList, setHistoryList } = useOutletContext();
@@ -18,8 +19,19 @@ export default function History() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentHistoryItems = historyList.slice(indexOfFirstItem, indexOfLastItem);
 
-  const handleDeleteHistory = (id) => {
-    setHistoryList(historyList.filter((item) => item.id !== id));
+  const handleDeleteHistory = async (id) => {
+    try {
+      const response = await fetchWithAuth(`/predictions/history/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setHistoryList(historyList.filter((item) => item.id !== id));
+      } else {
+        console.error('Failed to delete history');
+      }
+    } catch (error) {
+      console.error('Error deleting history:', error);
+    }
   };
 
   return (
