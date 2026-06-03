@@ -296,7 +296,7 @@ export default function StatsAndTestimonials() {
           {testimonials.map((test) => (
             <div
               key={test.id}
-              className={`p-6 rounded-[10px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between h-[230px] ${
+              className={`p-6 rounded-[10px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between min-h-[230px] h-full ${
                 test.isDark
                   ? 'bg-[#146178] text-white border border-[#AFAFAF]/10'
                   : 'bg-[#EDFBFF] text-black border-[0.5px] border-[#AFAFAF]/10'

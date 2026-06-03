@@ -8,8 +8,9 @@ import { useFormatCheckUpDate } from '../utils/FormatCheckUpDate.js';
 import { useTranslateCheckUp } from '../utils/TranslateCheckUp.js';
 
 export default function DashboardLayout() {
-  const username = localStorage.getItem('userName') || 'Jati Sri Pamungkas';
-  const email = localStorage.getItem('userEmail') || 'jatispamungkas357@gmail.com';
+  const [username, setUsername] = useState(() => localStorage.getItem('userName') || 'Jati Sri Pamungkas');
+  const [email, setEmail] = useState(() => localStorage.getItem('userEmail') || 'jatispamungkas357@gmail.com');
+  const [avatar, setAvatar] = useState(() => localStorage.getItem('userAvatar') || userAvatar);
 
   const { language, t, setLanguage } = useLanguage();
   const navigate = useNavigate();
@@ -160,6 +161,9 @@ export default function DashboardLayout() {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
+      localStorage.removeItem('userAvatar');
+      localStorage.removeItem('userAge');
+      localStorage.removeItem('userGender');
       navigate('/login');
     }
   };
@@ -203,9 +207,9 @@ export default function DashboardLayout() {
             className="flex items-center gap-2 focus:outline-none"
           >
             <img
-              src={userAvatar}
+              src={avatar}
               alt="User Avatar"
-              className="w-8 h-8 rounded-full border border-brand-primary/20"
+              className="w-8 h-8 rounded-full border border-brand-primary/20 object-cover"
             />
             <span className="font-semibold text-xs text-brand-primary truncate max-w-[80px]">
               {username}
@@ -374,6 +378,33 @@ export default function DashboardLayout() {
                 <span className="font-montserrat font-semibold text-[20px]">{t.menuAbout}</span>
               </button>
 
+              <button
+                onClick={() => {
+                  navigate('/dashboard/profile');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full h-[45px] px-4 rounded-xl flex items-center gap-3 transition-all duration-300 ${
+                  location.pathname === '/dashboard/profile'
+                    ? 'bg-brand-primary text-brand-accent shadow-md shadow-brand-primary/20'
+                    : 'text-[#262626] hover:bg-brand-primary/10'
+                }`}
+              >
+                <svg
+                  className={`w-[20px] h-[20px] shrink-0 ${location.pathname === '/dashboard/profile' ? 'text-brand-accent' : 'text-[#262626]'}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span className="font-montserrat font-semibold text-[20px]">{language === 'id' ? 'Profil' : 'Profile'}</span>
+              </button>
+
               <div className="px-4 py-2 border-t border-brand-primary/10 mt-2 select-none">
                 <div className="flex items-center justify-between">
                   <span className="font-montserrat font-semibold text-[15px] text-[#262626]">
@@ -408,7 +439,7 @@ export default function DashboardLayout() {
             <div className="w-full p-4 bg-brand-primary rounded-xl flex items-center justify-between border-t border-white/10 shrink-0 text-white mt-auto">
               <div className="flex items-center gap-3">
                 <img
-                  src={userAvatar}
+                  src={avatar}
                   alt="User Avatar"
                   className="w-10 h-10 rounded-full object-cover border border-white/20"
                 />
@@ -565,12 +596,38 @@ export default function DashboardLayout() {
               </svg>
               <span className="font-montserrat font-semibold text-[26px]">{t.menuAbout}</span>
             </button>
+
+            <button
+              onClick={() => {
+                navigate('/dashboard/profile');
+              }}
+              className={`w-full h-[49px] px-4 rounded-xl flex items-center gap-4 transition-all duration-300 ${
+                location.pathname === '/dashboard/profile'
+                  ? 'bg-brand-primary text-brand-accent shadow-md shadow-brand-primary/20'
+                  : 'text-[#262626] hover:bg-brand-primary/10'
+              }`}
+            >
+              <svg
+                className={`w-[24px] h-[24px] shrink-0 ${location.pathname === '/dashboard/profile' ? 'text-brand-accent' : 'text-[#262626]'}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <span className="font-montserrat font-semibold text-[26px]">{language === 'id' ? 'Profil' : 'Profile'}</span>
+            </button>
           </nav>
 
           <div className="w-full h-[86px] px-5 bg-brand-primary flex items-center justify-between border-t border-white/10 shrink-0">
             <div className="flex items-center gap-3">
               <img
-                src={userAvatar}
+                src={avatar}
                 alt="User Avatar"
                 className="w-[50px] h-[50px] rounded-full object-cover border border-white/20 hover:scale-105 transition-transform cursor-pointer"
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -671,7 +728,11 @@ export default function DashboardLayout() {
         <Outlet
           context={{
             username,
+            setUsername,
             email,
+            setEmail,
+            avatar,
+            setAvatar,
             historyList,
             setHistoryList,
             formatCheckUpDate,

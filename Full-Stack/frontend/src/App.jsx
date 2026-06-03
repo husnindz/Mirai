@@ -8,6 +8,7 @@ import CheckUp from './pages/dashboard/CheckUp';
 import History from './pages/dashboard/History';
 import HistoryDetails from './pages/dashboard/HistoryDetails';
 import About from './pages/dashboard/About';
+import Profile from './pages/dashboard/Profile';
 
 export default function App() {
   return (
@@ -17,12 +18,14 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login initialTab="login" />} />
         <Route path="/register" element={<Login initialTab="register" />} />
+        <Route path="/forgot" element={<Login initialTab="forgot" />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="checkup" element={<CheckUp />} />
           <Route path="history" element={<History />} />
           <Route path="history/:id" element={<HistoryDetails />} />
           <Route path="about" element={<About />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </>
