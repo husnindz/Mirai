@@ -19,8 +19,7 @@ Sistem ini tidak dimaksudkan sebagai alat diagnosis medis, melainkan sebagai ala
 ## 🎥 Demo
 
 **Demo Video:**  
-[Diisi Divisi Fullstack]
-
+http://youtube.com/watch?si=qhBCxX3GVtauP_Fe&v=miVFbIggkfQ&feature=youtu.be
 
 ---
 
@@ -59,10 +58,10 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 | 👩‍💻 Nama                         | 🆔 Student ID  | 🎓 Learning Path | Kontribusi / Task                                                                                                                                                                    |
 | :------------------------------ | :------------- | :--------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Husni Nur Dzaki**             | CDCC183D6Y0760 | Data Science     | Data preprocessing, data integration, feature engineering, feature selection, medical dataset construction, model evaluation, dan dokumentasi machine learning.                      |
-| **Tamariska Pusparani**         | CDCC008D6X0992 | Data Science     | lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.                                                          |
+| **Tamariska Pusparani**         | CDCC008D6X0992 | Data Science     | Melakukan Exploratory Data Analysis (EDA) dan Explanatory Data Analysis, visualisasi data kesehatan, serta menganalisis dan menyajikan wawasan data secara statistik.                |
 | **Jati Sri Pamungkas**          | CFCC183D6Y2824 | Full-Stack       | Merancang & mengimplementasikan antarmuka pengguna (UI/UX) website, mendesain skema arsitektur database, serta melakukan integrasi sistem backend dengan model AI secara end-to-end. |
-| **Arundaya Xenia Naurachmawan** | CFCC183D6X1944 | Full-Stack       | lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.                                                          |
-| **Muhammad Alif Indrastata**    | CACC183D6Y2083 | AI Engineer      | Desain model klasifikasi multi-kelas, pemrograman TensorFlow tingkat lanjut, kustomisasi pipeline pelatihan, optimasi performa otomatis via Optuna, analisis XAI (Explainable AI) menggunakan SHAP..                                                          |
+| **Arundaya Xenia Naurachmawan** | CFCC183D6X1944 | Full-Stack       | Membangun dan mengembangkan antarmuka pengguna (frontend) website, merancang komponen UI yang responsif, serta mengimplementasikan integrasi data (fetching data) dari API backend.  |
+| **Muhammad Alif Indrastata**    | CACC183D6Y2083 | AI               | Merancang, melatih, dan mengoptimalkan model kecerdasan buatan (deep learning/machine learning), melakukan hyperparameter tuning, serta mengevaluasi performa model.                 |
 
 ---
 
@@ -94,28 +93,28 @@ Melakukan analisis terhadap parameter laboratorium seperti:
 
 ### 🧩 Artificial Intelligence
 
-| Teknologi / Library | Fungsi |
-| :------------------ | :----- |
-| **TensorFlow & Keras** | Framework utama untuk membangun, melatih, dan melakukan inferensi model Deep Learning. |
-| **Optuna**             | Optimasi hyperparameter untuk meningkatkan performa model secara otomatis. |
-| **SHAP**               | Interpretabilitas model dan analisis kontribusi fitur terhadap prediksi. |
-| **Scikit-Learn**       | Data splitting, scaling, evaluasi model, dan perhitungan class weight. |
-| **Imbalanced-Learn (SMOTE)** | Menangani ketidakseimbangan kelas melalui oversampling sintetis. |
-| **TensorBoard**          | Monitoring proses training dan visualisasi metrik model. |
-| **Joblib**             | Menyimpan dan memuat model pendukung seperti scaler untuk deployment. |
+| Teknologi / Library          | Fungsi                                                                                 |
+| :--------------------------- | :------------------------------------------------------------------------------------- |
+| **TensorFlow & Keras**       | Framework utama untuk membangun, melatih, dan melakukan inferensi model Deep Learning. |
+| **Optuna**                   | Optimasi hyperparameter untuk meningkatkan performa model secara otomatis.             |
+| **SHAP**                     | Interpretabilitas model dan analisis kontribusi fitur terhadap prediksi.               |
+| **Scikit-Learn**             | Data splitting, scaling, evaluasi model, dan perhitungan class weight.                 |
+| **Imbalanced-Learn (SMOTE)** | Menangani ketidakseimbangan kelas melalui oversampling sintetis.                       |
+| **TensorBoard**              | Monitoring proses training dan visualisasi metrik model.                               |
+| **Joblib**                   | Menyimpan dan memuat model pendukung seperti scaler untuk deployment.                  |
 
 ---
 
 ## 🧩 Data Science
 
-| Teknologi / Library | Fungsi                                                                                              |
-| :------------------ | :-------------------------------------------------------------------------------------------------- |
-| **Pandas**          | Data cleaning, transformasi, dan integrasi dataset.                                                 |
-| **NumPy**           | Komputasi numerik dan pengolahan array.                                                             |
-| **Scikit-Learn**    | Library untuk preprocessing data, encoding, feature engineering, dan evaluasi dataset.              |
-| **Matplotlib**      | Library visualisasi data untuk analisis dan pelaporan hasil eksplorasi data.                        |
-| **Streamlit**       | Framework untuk membangun dashboard interaktif dan menampilkan hasil analisis data.                 |
-| **Seaborn**         | Library untuk Exploratory Data Analysis (EDA) dan visualisasi statistik.                            |
+| Teknologi / Library | Fungsi                                                                                 |
+| :------------------ | :------------------------------------------------------------------------------------- |
+| **Pandas**          | Data cleaning, transformasi, dan integrasi dataset.                                    |
+| **NumPy**           | Komputasi numerik dan pengolahan array.                                                |
+| **Scikit-Learn**    | Library untuk preprocessing data, encoding, feature engineering, dan evaluasi dataset. |
+| **Matplotlib**      | Library visualisasi data untuk analisis dan pelaporan hasil eksplorasi data.           |
+| **Streamlit**       | Framework untuk membangun dashboard interaktif dan menampilkan hasil analisis data.    |
+| **Seaborn**         | Library untuk Exploratory Data Analysis (EDA) dan visualisasi statistik.               |
 
 ## 📈 Hasil yang Diharapkan
 
@@ -167,6 +166,7 @@ Pastikan Anda sudah menginstal:
    pip install -r requirements.txt
    ```
 4. Jalankan server FastAPI:
+
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
    ```
@@ -194,6 +194,7 @@ Pastikan Anda sudah menginstal:
    npm run db:up
    ```
 5. Jalankan backend server:
+
    ```bash
    npm run dev
    ```
@@ -211,6 +212,7 @@ Pastikan Anda sudah menginstal:
    npm install
    ```
 3. Jalankan aplikasi web:
+
    ```bash
    npm run dev
    ```
